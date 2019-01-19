@@ -42,12 +42,13 @@ public class LoginActivity extends BaseActivity {
         login.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                username=editTextUsername.getText().toString();
-                password=editTextPassword.getText().toString();
-                sendRequestWithOkHttp(address,username,password);
+               // username=editTextUsername.getText().toString();
+                //password=editTextPassword.getText().toString();
+                //sendRequestWithOkHttp(address,username,password);
+                loginFlag=true;
                 if(loginFlag=true){
                     Intent intent=new Intent(LoginActivity.this, AdminMainActivity.class);
-                    startActivity(intent);
+                    LoginActivity.this.startActivity(intent);
 
 
                 }
@@ -61,8 +62,6 @@ public class LoginActivity extends BaseActivity {
      * date 2019/1/19
      * description 向服务器发送okHttp请求，
      */
-
-
     private void sendRequestWithOkHttp(final String address,String username,String password) {
         new Thread(new Runnable() {
             @Override

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import util.BaseActivity;
 
 public class AdminMainActivity extends BaseActivity {
-    private ArrayList<CoachItem> coachItemArrayList;
+    private ArrayList<CoachItem> coachItemArrayList=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
