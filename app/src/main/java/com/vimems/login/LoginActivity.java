@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.vimems.R;
+import com.vimems.R;
 import com.vimems.mainactivity.AdminMainActivity;
 
 import okhttp3.OkHttpClient;
