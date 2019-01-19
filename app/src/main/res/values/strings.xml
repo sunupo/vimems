@@ -8,5 +8,8 @@
     <string name="label_password">密码</string>
     <string name="label_username">用户名</string>
     <string name="add_coach">添加教练</string>
+    <string name="coach_username">姓名</string>
+    <string name="coach_gender">性别</string>
+    <string name="coach_birthday">出生日期</string>
     <integer name="login_button_alpha">1</integer>
 </resources>
