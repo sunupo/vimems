@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".mainactivity.AdminMainActivity"></activity>
+        <activity android:name=".admin.CoachDetailActivity"/>
     </application>
 
 </manifest>

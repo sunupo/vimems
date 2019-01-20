@@ -1,7 +1,9 @@
 package com.vimems.Adapter;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,11 @@ import android.widget.Toast;
 
 import com.vimems.AdapterItem.CoachItem;
 import com.vimems.R;
+import com.vimems.admin.CoachDetailActivity;
 
 import java.util.ArrayList;
+
+import util.InitBean;
 
 /**
  * author sunupo
@@ -53,7 +58,12 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
                 CoachItem coachItem=coachItemArrayList.get(position);
-                Toast.makeText(v.getContext(),"you have clicked view"+coachItem.getName(),Toast.LENGTH_LONG).show();
+//                Intent intent=new Intent(v.getContext(), CoachDetailActivity.class);
+//                intent.putExtra("coachUsername",coachItem.getName());
+//                intent.putExtra("coachID",coachItem.getCoachID());
+//                v.getContext().startActivity(intent);
+                Toast.makeText(v.getContext(), "教练"+coachItem.getCoachID()+"有"+InitBean.getCoachMemberNum(coachItem.getCoachID(),InitBean.memberArrayList)+"个会员"
+                        ,Toast.LENGTH_SHORT).show();
             }
         });
         holder.coachView.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +71,7 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
                 CoachItem coachItem=coachItemArrayList.get(position);
-                Toast.makeText(v.getContext(),"教练是"+coachItem.getName(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(v.getContext(),"教练是"+coachItem.getName(),Toast.LENGTH_LONG).show();
             }
         });
         return holder;

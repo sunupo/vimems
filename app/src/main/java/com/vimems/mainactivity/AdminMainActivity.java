@@ -3,38 +3,39 @@ package com.vimems.mainactivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.vimems.Adapter.CoachAdapter;
-import com.vimems.AdapterItem.CoachItem;
 import com.vimems.R;
 
-import java.util.ArrayList;
-
 import util.BaseActivity;
+import util.InitBean;
 
 public class AdminMainActivity extends BaseActivity {
-    private ArrayList<CoachItem> coachItemArrayList=new ArrayList<>();
+
+    private Button addCoach;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_main);
-        initCoachItemList();
+        InitBean.initCoachItemList();
+        InitBean.initMemberItemList();
         RecyclerView recyclerView=findViewById(R.id.coach_recycler_view);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        CoachAdapter coachAdapter=new CoachAdapter(coachItemArrayList);
+        CoachAdapter coachAdapter=new CoachAdapter(InitBean.coachItemArrayList);
         recyclerView.setAdapter(coachAdapter);
+        addCoach=findViewById(R.id.add_coach);
+        addCoach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),InitBean.getCoachMemberNum(2,InitBean.memberArrayList)+"个",Toast.LENGTH_LONG).show();
+                Log.d("coachid=",InitBean.getCoachMemberNum(2,InitBean.memberArrayList)+""+InitBean.memberArrayList.size());
+            }
+        });
     }
-    private void initCoachItemList(){
-        for(int i=0;i<2;i++){
-            CoachItem zhangsan=new CoachItem("zhangsan",R.drawable.ic_launcher_background);
-            coachItemArrayList.add(zhangsan);
-            CoachItem lisi=new CoachItem("lisi",R.drawable.ic_launcher_background);
-            coachItemArrayList.add(lisi);
-            CoachItem wangwu=new CoachItem("wangwu",R.drawable.ic_launcher_background);
-            coachItemArrayList.add(wangwu);
-            CoachItem zhao=new CoachItem("zhao",R.drawable.ic_launcher_background);
-            coachItemArrayList.add(zhao);
-        }
-    }
+
 }
