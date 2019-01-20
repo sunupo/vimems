@@ -35,7 +35,7 @@ public class Coach {
         return adminID;
     }
 
-    public String getcoachLoginName() {
+    public String getCoachLoginName() {
         return coachLoginName;
     }
 

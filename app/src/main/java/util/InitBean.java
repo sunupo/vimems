@@ -41,21 +41,21 @@ public class InitBean {
             coachArrayList.add(coachs[i]);
         }
         for(int i=0;i<1;i++){
-            CoachItem item1=new CoachItem(coachs[0].getLoginName(), R.drawable.ic_launcher_background,coachs[0].getCoachID());
+            CoachItem item1=new CoachItem(coachs[0].getCoachLoginName(), R.drawable.ic_launcher_background,coachs[0].getCoachID());
             coachItemArrayList.add(item1);
-            CoachItem item2=new CoachItem(coachs[1].getLoginName(),R.drawable.ic_launcher_background,coachs[1].getCoachID());
+            CoachItem item2=new CoachItem(coachs[1].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[1].getCoachID());
             coachItemArrayList.add(item2);
-            CoachItem item3=new CoachItem(coachs[2].getLoginName(),R.drawable.ic_launcher_background,coachs[2].getCoachID());
+            CoachItem item3=new CoachItem(coachs[2].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[2].getCoachID());
             coachItemArrayList.add(item3);
-            CoachItem item4=new CoachItem(coachs[3].getLoginName(),R.drawable.ic_launcher_background,coachs[3].getCoachID());
+            CoachItem item4=new CoachItem(coachs[3].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[3].getCoachID());
             coachItemArrayList.add(item4);
-            CoachItem item5=new CoachItem(coachs[4].getLoginName(),R.drawable.ic_launcher_background,coachs[4].getCoachID());
+            CoachItem item5=new CoachItem(coachs[4].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[4].getCoachID());
             coachItemArrayList.add(item5);
-            CoachItem item6=new CoachItem(coachs[5].getLoginName(),R.drawable.ic_launcher_background,coachs[5].getCoachID());
+            CoachItem item6=new CoachItem(coachs[5].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[5].getCoachID());
             coachItemArrayList.add(item6);
-            CoachItem item7=new CoachItem(coachs[6].getLoginName(),R.drawable.ic_launcher_background,coachs[6].getCoachID());
+            CoachItem item7=new CoachItem(coachs[6].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[6].getCoachID());
             coachItemArrayList.add(item7);
-            CoachItem item8=new CoachItem(coachs[7].getLoginName(),R.drawable.ic_launcher_background,coachs[7].getCoachID());
+            CoachItem item8=new CoachItem(coachs[7].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[7].getCoachID());
             coachItemArrayList.add(item8);
 
         }

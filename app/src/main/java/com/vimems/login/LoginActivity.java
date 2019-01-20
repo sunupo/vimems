@@ -14,6 +14,7 @@ import com.vimems.R;
 import com.vimems.bean.Admin;
 import com.vimems.bean.Coach;
 import com.vimems.mainactivity.AdminMainActivity;
+import com.vimems.mainactivity.CoachMainActivity;
 
 import java.util.Iterator;
 
@@ -134,7 +135,7 @@ public class LoginActivity extends BaseActivity {
         Coach tempCoach;
         while (coachIterator.hasNext()) {
             tempCoach = coachIterator.next();
-            tempName = tempCoach.getLoginName();
+            tempName = tempCoach.getCoachLoginName();
             tempPassword = tempCoach.getLoginPWD();
             if (tempName.equals(username) && tempPassword.equals(password)) {
                 loginFlag = true;
@@ -155,7 +156,7 @@ public class LoginActivity extends BaseActivity {
                 sp.edit().remove("ISCHECKED").commit();
             }
             Toast.makeText(LoginActivity.this, "登陆成功！", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, CoachMainActivity.class);
             LoginActivity.this.startActivity(intent);
         }else{
             Toast.makeText(LoginActivity.this, "用户名密码错误！", Toast.LENGTH_LONG).show();

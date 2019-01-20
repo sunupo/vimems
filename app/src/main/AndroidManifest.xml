@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.vimems">
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -14,22 +13,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".mainactivity.CoachMainActivity"></activity>
         <activity
-            android:launchMode="singleTask"
             android:name=".login.LoginActivity"
-            android:label="@string/title_activity_login">
+            android:label="@string/title_activity_login"
+            android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mainactivity.AdminMainActivity"
-            android:launchMode="singleTask"
-            ></activity>
-        <activity android:name=".admin.CoachDetailActivity"
-            android:launchMode="singleTask"
-            />
-        <activity android:name=".admin.AddCoach"/>
+        <activity
+            android:name=".mainactivity.AdminMainActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".admin.CoachDetailActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".admin.AddCoach" />
     </application>
 
 </manifest>

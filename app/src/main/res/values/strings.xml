@@ -24,5 +24,6 @@
     <string name="image_ID">image_ID</string>
     <string name="coach_login_name">教练登录名</string>
     <string name="login_password">登录密码</string>
+    <string name="admin_remove_member">删除会员</string>
     <integer name="login_button_alpha">1</integer>
 </resources>

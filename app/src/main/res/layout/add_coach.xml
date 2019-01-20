@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="@string/admin_ID"/>
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/admin_ID"
+            android:id="@+id/default_admin_ID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
