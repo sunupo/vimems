@@ -14,5 +14,15 @@
     <string name="coach_ID">教练ID</string>
     <string name="save_pwd">保存密码</string>
     <string name="save_password">保存密码</string>
+    <string name="coach_rank">评分</string>
+    <string name="coach_rank_1">A</string>
+    <string name="coach_rank_2">B</string>
+    <string name="coach_rank_3">C</string>
+    <string name="admin_add_member">增加会员</string>
+    <string name="add_coach_submit">确认添加</string>
+    <string name="admin_ID">管理员ID</string>
+    <string name="image_ID">image_ID</string>
+    <string name="coach_login_name">教练登录名</string>
+    <string name="login_password">登录密码</string>
     <integer name="login_button_alpha">1</integer>
 </resources>

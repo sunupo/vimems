@@ -29,6 +29,7 @@
         <activity android:name=".admin.CoachDetailActivity"
             android:launchMode="singleTask"
             />
+        <activity android:name=".admin.AddCoach"/>
     </application>
 
 </manifest>

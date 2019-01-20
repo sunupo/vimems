@@ -43,7 +43,6 @@ public class CoachDetailActivity extends BaseActivity {
 //        coachBirthday.setText(intent.getStringExtra("coachBirthday"));
 
         coachID.setText(intent.getStringExtra("coachID"));
-        Log.d("coachID", intent.getStringExtra("coachID"));
     }
     private void initCoachMemberList(){
 

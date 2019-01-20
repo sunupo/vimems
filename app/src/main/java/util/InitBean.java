@@ -1,10 +1,9 @@
 package util;
 
-import android.util.Log;
-
 import com.vimems.AdapterItem.CoachItem;
 import com.vimems.AdapterItem.MemberItem;
 import com.vimems.R;
+import com.vimems.bean.Admin;
 import com.vimems.bean.Coach;
 import com.vimems.bean.Member;
 
@@ -15,36 +14,48 @@ import java.util.Iterator;
 
 public class InitBean {
     public static boolean isInit=false;
-    public static String loginName;
-    public  static String loginPWD;
+
+    public static ArrayList<Admin> adminArrayList=new ArrayList<>();
     public static ArrayList<CoachItem> coachItemArrayList=new ArrayList<>();
+    public static ArrayList<Coach> coachArrayList=new ArrayList<>();
     public static ArrayList<MemberItem> memberItemArrayList=new ArrayList<>();
     public static ArrayList<Member> memberArrayList=new ArrayList<>();
+
+    public static void initAdminList(){
+        for (int i = 0; i <10; i++) {
+            adminArrayList.add(new Admin(i,"adminName"+i,"adminLoginName"+i,"123456","男"));
+        }
+    }
     public static void initCoachItemList(){
-        Coach coach1=new Coach(1,1,1,"coachLoginName1","123456","男",new Date());
-        Coach coach2=new Coach(2,1,2,"coachLoginName2","123456","男",new Date());
-        Coach coach3=new Coach(3,1,3,"coachLoginName3","123456","男",new Date());
-        Coach coach4=new Coach(4,1,4,"coachLoginName4","123456","女",new Date());
-        Coach coach5=new Coach(5,1,5,"coachLoginName5","123456","女",new Date());
-        Coach coach6=new Coach(6,2,6,"coachLoginName6","123456","女",new Date());
-        Coach coach7=new Coach(7,2,7,"coachLoginName7","123456","女",new Date());
-        Coach coach8=new Coach(8,2,8,"coachLoginName8","123456","女",new Date());
+        Coach[] coachs=new Coach[8];
+        coachs[0]=new Coach(1,1,1,"coachName1","coachLoginName1","123456","男",new Date(),"C");
+        coachs[1]=new Coach(2,1,2,"coachName2","coachLoginName2","123456","男",new Date(),"B");
+        coachs[2]=new Coach(3,1,3,"coachName3","coachLoginName3","123456","男",new Date(),"A");
+        coachs[3]=new Coach(4,1,4,"coachName4","coachLoginName4","123456","女",new Date(),"B");
+        coachs[4]=new Coach(5,1,5,"coachName5","coachLoginName5","123456","女",new Date(),"C");
+        coachs[5]=new Coach(6,2,6,"coachName6","coachLoginName6","123456","女",new Date(),"A");
+        coachs[6]=new Coach(7,2,7,"coachName7","coachLoginName7","123456","女",new Date(),"B");
+        coachs[7]=new Coach(8,2,8,"coachName8","coachLoginName8","123456","女",new Date(),"A");
+
+        for (int i = 0; i < 8; i++) {
+            coachArrayList.add(coachs[i]);
+        }
         for(int i=0;i<1;i++){
-            CoachItem item1=new CoachItem(coach1.getLoginName(), R.drawable.ic_launcher_background,coach1.getCoachID());
+            CoachItem item1=new CoachItem(coachs[0].getLoginName(), R.drawable.ic_launcher_background,coachs[0].getCoachID());
             coachItemArrayList.add(item1);
-            CoachItem item2=new CoachItem(coach2.getLoginName(),R.drawable.ic_launcher_background,coach2.getCoachID());
+            CoachItem item2=new CoachItem(coachs[1].getLoginName(),R.drawable.ic_launcher_background,coachs[1].getCoachID());
             coachItemArrayList.add(item2);
-            CoachItem item3=new CoachItem(coach3.getLoginName(),R.drawable.ic_launcher_background,coach3.getCoachID());
+            CoachItem item3=new CoachItem(coachs[2].getLoginName(),R.drawable.ic_launcher_background,coachs[2].getCoachID());
             coachItemArrayList.add(item3);
-            CoachItem item4=new CoachItem(coach4.getLoginName(),R.drawable.ic_launcher_background,coach4.getCoachID());
+            CoachItem item4=new CoachItem(coachs[3].getLoginName(),R.drawable.ic_launcher_background,coachs[3].getCoachID());
             coachItemArrayList.add(item4);
-            CoachItem item5=new CoachItem(coach5.getLoginName(),R.drawable.ic_launcher_background,coach5.getCoachID());
+            CoachItem item5=new CoachItem(coachs[4].getLoginName(),R.drawable.ic_launcher_background,coachs[4].getCoachID());
             coachItemArrayList.add(item5);
-            CoachItem item6=new CoachItem(coach6.getLoginName(),R.drawable.ic_launcher_background,coach6.getCoachID());
+            CoachItem item6=new CoachItem(coachs[5].getLoginName(),R.drawable.ic_launcher_background,coachs[5].getCoachID());
             coachItemArrayList.add(item6);
-            CoachItem item7=new CoachItem(coach7.getLoginName(),R.drawable.ic_launcher_background,coach7.getCoachID());
+            CoachItem item7=new CoachItem(coachs[6].getLoginName(),R.drawable.ic_launcher_background,coachs[6].getCoachID());
             coachItemArrayList.add(item7);
-            CoachItem item8=new CoachItem(coach8.getLoginName(),R.drawable.ic_launcher_background,coach8.getCoachID());
+            CoachItem item8=new CoachItem(coachs[7].getLoginName(),R.drawable.ic_launcher_background,coachs[7].getCoachID());
             coachItemArrayList.add(item8);
 
         }

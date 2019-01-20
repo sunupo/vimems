@@ -1,5 +1,6 @@
 package com.vimems.mainactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.vimems.Adapter.CoachAdapter;
 import com.vimems.R;
+import com.vimems.admin.AddCoach;
 
 import util.BaseActivity;
 import util.InitBean;
@@ -25,6 +27,7 @@ public class AdminMainActivity extends BaseActivity {
         if(InitBean.isInit==false){
             InitBean.initCoachItemList();
             InitBean.initMemberItemList();
+            InitBean.initAdminList();
             InitBean.isInit=true;
         }
 
@@ -37,8 +40,9 @@ public class AdminMainActivity extends BaseActivity {
         addCoach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),InitBean.getCoachMemberNum(2,InitBean.memberArrayList)+"个",Toast.LENGTH_LONG).show();
-                Log.d("coachid=",InitBean.getCoachMemberNum(2,InitBean.memberArrayList)+""+InitBean.memberArrayList.size());
+                Intent intent=new Intent(AdminMainActivity.this, AddCoach.class);
+                startActivity(intent);
+                Toast.makeText(v.getContext(),"添加教练",Toast.LENGTH_LONG).show();
             }
         });
     }
