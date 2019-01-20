@@ -14,6 +14,9 @@ import java.util.Iterator;
 
 
 public class InitBean {
+    public static boolean isInit=false;
+    public static String loginName;
+    public  static String loginPWD;
     public static ArrayList<CoachItem> coachItemArrayList=new ArrayList<>();
     public static ArrayList<MemberItem> memberItemArrayList=new ArrayList<>();
     public static ArrayList<Member> memberArrayList=new ArrayList<>();

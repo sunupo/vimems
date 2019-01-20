@@ -21,8 +21,13 @@ public class AdminMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_main);
-        InitBean.initCoachItemList();
-        InitBean.initMemberItemList();
+
+        if(InitBean.isInit==false){
+            InitBean.initCoachItemList();
+            InitBean.initMemberItemList();
+            InitBean.isInit=true;
+        }
+
         RecyclerView recyclerView=findViewById(R.id.coach_recycler_view);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);

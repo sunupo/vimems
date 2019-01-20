@@ -38,11 +38,12 @@ public class CoachDetailActivity extends BaseActivity {
         MemberAdapter memberAdapter=new MemberAdapter(InitBean.memberItemArrayList);
         recyclerView.setAdapter(memberAdapter);
         Intent intent=getIntent();
-        coachUsername.setText(intent.getStringExtra("coachUsername"));
+//        coachUsername.setText(intent.getStringExtra("coachUsername"));
 //        coachGender.setText(intent.getStringExtra("caochGender"));
 //        coachBirthday.setText(intent.getStringExtra("coachBirthday"));
 
         coachID.setText(intent.getStringExtra("coachID"));
+        Log.d("coachID", intent.getStringExtra("coachID"));
     }
     private void initCoachMemberList(){
 

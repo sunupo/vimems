@@ -94,6 +94,16 @@
 
 
             </android.support.v7.widget.LinearLayoutCompat>
+            <!--<android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/save_pwd"
+                android:text="@string/save_pwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />-->
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/save_password"
+                android:text="@string/save_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/loginButton"

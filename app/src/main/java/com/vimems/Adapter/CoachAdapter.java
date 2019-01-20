@@ -43,7 +43,6 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
         }
     }
 
-
     public CoachAdapter(ArrayList<CoachItem> coachItemArrayList) {
         this.coachItemArrayList = coachItemArrayList;
     }
@@ -56,14 +55,17 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
         holder.coachName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 int position=holder.getAdapterPosition();
                 CoachItem coachItem=coachItemArrayList.get(position);
-//                Intent intent=new Intent(v.getContext(), CoachDetailActivity.class);
-//                intent.putExtra("coachUsername",coachItem.getName());
-//                intent.putExtra("coachID",coachItem.getCoachID());
-//                v.getContext().startActivity(intent);
-                Toast.makeText(v.getContext(), "教练"+coachItem.getCoachID()+"有"+InitBean.getCoachMemberNum(coachItem.getCoachID(),InitBean.memberArrayList)+"个会员"
+                Toast.makeText(v.getContext(), "教练"+coachItem.getName()+"有"+InitBean.getCoachMemberNum(coachItem.getCoachID(),InitBean.memberArrayList)+"个会员"
                         ,Toast.LENGTH_SHORT).show();
+
+                Intent intent=new Intent(v.getContext(), CoachDetailActivity.class);
+                intent.putExtra("coachUsername",coachItem.getName());
+                intent.putExtra("coachID",coachItem.getCoachID());
+                v.getContext().startActivity(intent);
+
             }
         });
         holder.coachView.setOnClickListener(new View.OnClickListener() {
