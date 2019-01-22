@@ -12,6 +12,11 @@ import android.widget.Toast;
 import com.vimems.Adapter.CoachAdapter;
 import com.vimems.R;
 import com.vimems.admin.AddCoach;
+import com.vimems.bean.Admin;
+import com.vimems.bean.Coach;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import util.BaseActivity;
 import util.InitBean;
@@ -19,6 +24,12 @@ import util.InitBean;
 public class AdminMainActivity extends BaseActivity {
 
     private Button addCoach;
+    private  RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+
+    private  String adminLoginName;
+    private  int admin_id;
+    private  ArrayList<Coach> adminCoachArrayList=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,13 +41,16 @@ public class AdminMainActivity extends BaseActivity {
             InitBean.initAdminList();
             InitBean.isInit=true;
         }
+        Intent intent=getIntent();
+        adminLoginName=intent.getStringExtra("adminLoginName");
+        Log.d("adminLoginName", "onCreate:adminLoginName "+adminLoginName);
 
-        RecyclerView recyclerView=findViewById(R.id.coach_recycler_view);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        recyclerView=findViewById(R.id.coach_recycler_view);
+        linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        CoachAdapter coachAdapter=new CoachAdapter(InitBean.coachItemArrayList);
+        CoachAdapter coachAdapter=new CoachAdapter(initCoachArrayList(getAdminID(InitBean.adminArrayList,adminLoginName)));
         recyclerView.setAdapter(coachAdapter);
-        addCoach=findViewById(R.id.add_coach);
+        addCoach=findViewById(R.id.add_coach_button);
         addCoach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,5 +60,32 @@ public class AdminMainActivity extends BaseActivity {
             }
         });
     }
+    private int getAdminID(ArrayList<Admin> adminArrayList, String adminLoinName){
+        Iterator<Admin> adminIterator=adminArrayList.iterator();
+        Admin admin;
+        while(adminIterator.hasNext()){
+            admin=adminIterator.next();
+            if(admin.getLoginName().equals(adminLoinName)){
+                admin_id=admin.getAdminID();
+                Log.d("admin_id", "onCreate:admin_id "+admin_id);
 
+                return admin_id;
+
+            }
+        }
+        return 0;
+    }
+    public ArrayList<Coach> initCoachArrayList(int admin_id){
+
+
+        Iterator<Coach> iterator=InitBean.coachArrayList.iterator();
+        Coach coach;
+        while(iterator.hasNext()){
+            coach=iterator.next();
+            if(coach.getAdminID()==admin_id){
+                adminCoachArrayList.add(coach);
+            }
+        }
+        return  adminCoachArrayList;
+    }
 }

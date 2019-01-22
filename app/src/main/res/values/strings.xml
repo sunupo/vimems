@@ -25,5 +25,27 @@
     <string name="coach_login_name">教练登录名</string>
     <string name="login_password">登录密码</string>
     <string name="admin_remove_member">删除会员</string>
+    <string name="admin_check_ble_device">查看蓝牙设备</string>
+    <string name="add_coach_ID">默认教练ID</string>
+    <string name="add_admin_ID">默认管理员ID</string>
+    <string name="add_image_ID">头像</string>
+    <string name="add_coach_username">添加教练名</string>
+    <string name="add_coach_login_name">添加教练登录名</string>
+    <string name="add_login_password">添加教练登录名</string>
+    <string name="add_coach_gender">添加教练登录密码</string>
+    <string name="add_coach_birthday">添加教练出生日期</string>
+    <string name="add_coach_rank">默认教练评分</string>
     <integer name="login_button_alpha">1</integer>
+
+    <string name="last_seen">Last Seen:</string>
+    <string name="just_now">just now</string>
+    <string name="minute_ago">minute ago</string>
+    <string name="hour_ago">hour ago</string>
+    <string name="seconds_ago">seconds ago</string>
+    <string name="minutes_ago">minutes ago</string>
+    <string name="hours_ago">hours ago</string>
+    <string name="no_name">(no name)</string>
+    <string name="coach_name">教练姓名</string>
+    <string name="add_coach_button">增加教练按钮</string>
+
 </resources>

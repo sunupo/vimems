@@ -30,9 +30,9 @@ public class AddCoach extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_coach);
 
-        coachID=findViewById(R.id.coach_ID);
+        coachID=findViewById(R.id.add_coach_ID);
 
-        adminID=findViewById(R.id.default_admin_ID);
+        adminID=findViewById(R.id.add_admin_ID);
         addCoachSubmit=findViewById(R.id.add_coach_submit);
     }
 }

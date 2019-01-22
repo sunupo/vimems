@@ -6,6 +6,7 @@ public class Member {
     private String memberName;
     private int memberID;
     private int coachID;
+    private  int imageID;
     private String gender;
     private Date birthdate;
     private double height;
@@ -13,10 +14,11 @@ public class Member {
     private Date date;
     private int age;
 
-    public Member(String memberName, int memberID, int coachID, String gender, Date birthdate, double height, double weight, Date date, int age) {
+    public Member(String memberName, int memberID, int coachID, int imageID, String gender, Date birthdate, double height, double weight, Date date, int age) {
         this.memberName = memberName;
         this.memberID = memberID;
         this.coachID = coachID;
+        this.imageID = imageID;
         this.gender = gender;
         this.birthdate = birthdate;
         this.height = height;
@@ -47,6 +49,14 @@ public class Member {
 
     public void setCoachID(int coachID) {
         this.coachID = coachID;
+    }
+
+    public int getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(int imageID) {
+        this.imageID = imageID;
     }
 
     public String getGender() {

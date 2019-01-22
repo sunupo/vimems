@@ -26,6 +26,25 @@ public class Coach {
         this.coachRank = coachRank;
     }
 
+    public String getCoachName() {
+        return coachName;
+    }
+
+    public void setCoachName(String coachName) {
+        this.coachName = coachName;
+    }
+
+    public void setCoachLoginName(String coachLoginName) {
+        this.coachLoginName = coachLoginName;
+    }
+
+    public String getLoginPassword() {
+        return loginPassword;
+    }
+
+    public void setLoginPassword(String loginPassword) {
+        this.loginPassword = loginPassword;
+    }
 
     public int getCoachID() {
         return coachID;

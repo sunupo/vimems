@@ -28,14 +28,14 @@ public class InitBean {
     }
     public static void initCoachItemList(){
         Coach[] coachs=new Coach[8];
-        coachs[0]=new Coach(1,1,1,"coachName1","coachLoginName1","123456","男",new Date(),"C");
-        coachs[1]=new Coach(2,1,2,"coachName2","coachLoginName2","123456","男",new Date(),"B");
-        coachs[2]=new Coach(3,1,3,"coachName3","coachLoginName3","123456","男",new Date(),"A");
-        coachs[3]=new Coach(4,1,4,"coachName4","coachLoginName4","123456","女",new Date(),"B");
-        coachs[4]=new Coach(5,1,5,"coachName5","coachLoginName5","123456","女",new Date(),"C");
-        coachs[5]=new Coach(6,2,6,"coachName6","coachLoginName6","123456","女",new Date(),"A");
-        coachs[6]=new Coach(7,2,7,"coachName7","coachLoginName7","123456","女",new Date(),"B");
-        coachs[7]=new Coach(8,2,8,"coachName8","coachLoginName8","123456","女",new Date(),"A");
+        coachs[0]=new Coach(1,1,R.drawable.ic_launcher_background,"coachName1","coachLoginName1","123456","男",new Date(),"C");
+        coachs[1]=new Coach(2,1,R.drawable.ic_launcher_background,"coachName2","coachLoginName2","123456","男",new Date(),"B");
+        coachs[2]=new Coach(3,1,R.drawable.ic_launcher_background,"coachName3","coachLoginName3","123456","男",new Date(),"A");
+        coachs[3]=new Coach(4,1,R.drawable.ic_launcher_background,"coachName4","coachLoginName4","123456","女",new Date(),"B");
+        coachs[4]=new Coach(5,1,R.drawable.ic_launcher_background,"coachName5","coachLoginName5","123456","女",new Date(),"C");
+        coachs[5]=new Coach(6,2,R.drawable.ic_launcher_background,"coachName6","coachLoginName6","123456","女",new Date(),"A");
+        coachs[6]=new Coach(7,2,R.drawable.ic_launcher_background,"coachName7","coachLoginName7","123456","女",new Date(),"B");
+        coachs[7]=new Coach(8,2,R.drawable.ic_launcher_background,"coachName8","coachLoginName8","123456","女",new Date(),"A");
 
         for (int i = 0; i < 8; i++) {
             coachArrayList.add(coachs[i]);
@@ -64,28 +64,28 @@ public class InitBean {
 
         Member[]  members=new Member[110];
         for (int i = 0; i <=20; i++) {
-            members[i]=new Member("member"+i,i,1,"男",new Date(),1.7,65,new Date(),22);
+            members[i]=new Member("member"+i,i,1,R.drawable.ic_launcher_foreground,"男",new Date(),1.7,65,new Date(),22);
         }
         for (int i = 21; i <=40; i++) {
-            members[i]=new Member("member"+i,i,2,"男",new Date(),1.7,65,new Date(),22);
+            members[i]=new Member("member"+i,i,2,R.drawable.ic_launcher_foreground,"男",new Date(),1.7,65,new Date(),22);
         }
         for (int i = 41; i <=60; i++) {
-            members[i]=new Member("member"+i,i,3,"男",new Date(),1.7,65,new Date(),22);
+            members[i]=new Member("member"+i,i,3,R.drawable.ic_launcher_foreground,"男",new Date(),1.7,65,new Date(),22);
         }
         for (int i = 61; i <=70; i++) {
-            members[i]=new Member("member"+i,i,4,"女",new Date(),1.7,65,new Date(),18);
+            members[i]=new Member("member"+i,i,4,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
         }
         for (int i = 71; i <=80; i++) {
-            members[i]=new Member("member"+i,i,5,"女",new Date(),1.7,65,new Date(),18);
+            members[i]=new Member("member"+i,i,5,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
         }
         for (int i = 81; i <=90; i++) {
-            members[i]=new Member("member"+i,i,6,"女",new Date(),1.7,65,new Date(),18);
+            members[i]=new Member("member"+i,i,6,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
         }
         for (int i = 91; i <=100; i++) {
-            members[i]=new Member("member"+i,i,7,"女",new Date(),1.7,65,new Date(),18);
+            members[i]=new Member("member"+i,i,7,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
         }
         for (int i = 101; i <110; i++) {
-            members[i]=new Member("member"+i,i,8,"女",new Date(),1.7,65,new Date(),18);
+            members[i]=new Member("member"+i,i,8,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
         }
         for (int i = 0; i < members.length; i++) {
             memberArrayList.add(members[i]);

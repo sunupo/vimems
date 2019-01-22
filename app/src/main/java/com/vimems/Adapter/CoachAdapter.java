@@ -11,13 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vimems.AdapterItem.CoachItem;
 import com.vimems.R;
 import com.vimems.admin.CoachDetailActivity;
+import com.vimems.bean.Coach;
 
 import java.util.ArrayList;
 
 import util.InitBean;
+
 
 /**
  * author sunupo
@@ -28,7 +29,7 @@ import util.InitBean;
 
 public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
 
-    private ArrayList<CoachItem> coachItemArrayList;
+    private ArrayList<Coach> coachArrayList;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         View coachView;
@@ -38,13 +39,13 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             coachView=itemView;
-            coachImage= itemView.findViewById(R.id.coach_image);
-            coachName= itemView.findViewById(R.id.coach_name);
+            coachImage= (ImageView) itemView.findViewById(R.id.item_coach_image);
+            coachName= (TextView) itemView.findViewById(R.id.item_coach_name);
         }
     }
 
-    public CoachAdapter(ArrayList<CoachItem> coachItemArrayList) {
-        this.coachItemArrayList = coachItemArrayList;
+    public CoachAdapter(ArrayList<Coach> coachArrayList) {
+        this.coachArrayList = coachArrayList;
     }
 
     @NonNull
@@ -57,13 +58,13 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
             public void onClick(View v) {
 
                 int position=holder.getAdapterPosition();
-                CoachItem coachItem=coachItemArrayList.get(position);
-                Toast.makeText(v.getContext(), "教练"+coachItem.getName()+"有"+InitBean.getCoachMemberNum(coachItem.getCoachID(),InitBean.memberArrayList)+"个会员"
+                Coach coach=coachArrayList.get(position);
+                Toast.makeText(v.getContext(), "教练"+coach.getCoachName()+"有"+InitBean.getCoachMemberNum(coach.getCoachID(),InitBean.memberArrayList)+"个会员"
                         ,Toast.LENGTH_SHORT).show();
 
                 Intent intent=new Intent(v.getContext(), CoachDetailActivity.class);
-                intent.putExtra("coachUsername",coachItem.getName());
-                intent.putExtra("coachID",coachItem.getCoachID());
+                intent.putExtra("coachName",coach.getCoachName());
+                intent.putExtra("coachID",coach.getCoachID());
                 v.getContext().startActivity(intent);
 
             }
@@ -72,8 +73,8 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
-                CoachItem coachItem=coachItemArrayList.get(position);
-                //Toast.makeText(v.getContext(),"教练是"+coachItem.getName(),Toast.LENGTH_LONG).show();
+                Coach coach=coachArrayList.get(position);
+                Toast.makeText(v.getContext(),"教练是"+coach.getCoachName(),Toast.LENGTH_LONG).show();
             }
         });
         return holder;
@@ -82,13 +83,13 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull CoachAdapter.ViewHolder viewHolder, int i) {
 
-        CoachItem coachItem=coachItemArrayList.get(i);
-        viewHolder.coachImage.setImageResource(coachItem.getImageId());
-        viewHolder.coachName.setText(coachItem.getName());
+        Coach coach=coachArrayList.get(i);
+        viewHolder.coachImage.setImageResource(coach.getImageID());
+        viewHolder.coachName.setText(coach.getCoachName());
     }
 
     @Override
     public int getItemCount() {
-        return coachItemArrayList.size();
+        return coachArrayList.size();
     }
 }

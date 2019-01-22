@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vimems.AdapterItem.MemberItem;
 import com.vimems.R;
+import com.vimems.bean.Member;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder>{
 
-    private ArrayList<MemberItem> memberItemArrayList;
+    private ArrayList<Member> memberArrayList;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         View memberView;
@@ -33,14 +33,14 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             memberView=itemView;
-            memberImage= itemView.findViewById(R.id.member_image);
-            memberName= itemView.findViewById(R.id.member_name);
+            memberImage= (ImageView) itemView.findViewById(R.id.member_image);
+            memberName= (TextView) itemView.findViewById(R.id.member_name);
         }
     }
 
 
-    public MemberAdapter(ArrayList<MemberItem> memberItemArrayList) {
-        this.memberItemArrayList = memberItemArrayList;
+    public MemberAdapter(ArrayList<Member> memberArrayList) {
+        this.memberArrayList = memberArrayList;
     }
 
     @NonNull
@@ -52,16 +52,16 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
-                MemberItem memberItem=memberItemArrayList.get(position);
-                Toast.makeText(v.getContext(),"you have clicked view"+memberItem.getName(),Toast.LENGTH_LONG).show();
+                Member member=memberArrayList.get(position);
+                Toast.makeText(v.getContext(),"you have clicked view"+member.getMemberName(),Toast.LENGTH_LONG).show();
             }
         });
         holder.memberView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
-                MemberItem memberItem=memberItemArrayList.get(position);
-                Toast.makeText(v.getContext(),"教练是"+memberItem.getName(),Toast.LENGTH_LONG).show();
+                Member member=memberArrayList.get(position);
+                Toast.makeText(v.getContext(),"教练是"+member.getMemberName(),Toast.LENGTH_LONG).show();
             }
         });
         return holder;
@@ -70,13 +70,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull MemberAdapter.ViewHolder viewHolder, int i) {
 
-        MemberItem memberItem=memberItemArrayList.get(i);
-        viewHolder.memberImage.setImageResource(memberItem.getImageId());
-        viewHolder.memberName.setText(memberItem.getName());
+        Member member=memberArrayList.get(i);
+        viewHolder.memberImage.setImageResource(member.getImageID());
+        viewHolder.memberName.setText(member.getMemberName());
     }
 
     @Override
     public int getItemCount() {
-        return memberItemArrayList.size();
+        return memberArrayList.size();
     }
 }

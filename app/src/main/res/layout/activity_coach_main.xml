@@ -29,18 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
-    <android.support.v7.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/coach_birthday"/>
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/coach_birthday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.v7.widget.LinearLayoutCompat>
+
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -92,11 +81,11 @@
             android:id="@+id/admin_remove_member"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <!--<android.support.v7.widget.AppCompatButton
+        <android.support.v7.widget.AppCompatButton
             android:text="@string/admin_check_ble_device"
             android:id="@+id/admin_check_ble_device"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />-->
+            android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/coach_member_recycler_view"

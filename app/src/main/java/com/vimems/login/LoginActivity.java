@@ -85,11 +85,14 @@ public class LoginActivity extends BaseActivity {
                    localAdminLogin(username,password);
                }else if(username.contains("coachLoginName")){
                    localCoachLogin(username,password);
+               }else{
+                   Toast.makeText(LoginActivity.this, "用户名密码错误！", Toast.LENGTH_LONG).show();
                }
             }
         });
 
     }
+    //本地管理员登陆
     private void localAdminLogin(String username,String password){
         loginFlag=false;
         Iterator<Admin> adminIterator=InitBean.adminArrayList.iterator();
@@ -120,12 +123,14 @@ public class LoginActivity extends BaseActivity {
             }
             Toast.makeText(LoginActivity.this, "登陆成功！", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+            intent.putExtra("adminLoginName",username);
             LoginActivity.this.startActivity(intent);
         }else{
             Toast.makeText(LoginActivity.this, "用户名密码错误！", Toast.LENGTH_LONG).show();
         }
 
     }
+    //本地教练登录
     private void localCoachLogin(String username,String password) {
         loginFlag=false;
 
@@ -157,6 +162,7 @@ public class LoginActivity extends BaseActivity {
             }
             Toast.makeText(LoginActivity.this, "登陆成功！", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(LoginActivity.this, CoachMainActivity.class);
+            intent.putExtra("coachLoginName",username);
             LoginActivity.this.startActivity(intent);
         }else{
             Toast.makeText(LoginActivity.this, "用户名密码错误！", Toast.LENGTH_LONG).show();
