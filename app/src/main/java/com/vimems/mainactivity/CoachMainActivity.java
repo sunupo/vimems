@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.vimems.Adapter.MemberAdapter;
+import com.vimems.Ble.BleScannerAdvertiserActivity;
 import com.vimems.R;
 import com.vimems.bean.Coach;
 import com.vimems.bean.Member;
@@ -17,7 +20,7 @@ import java.util.Iterator;
 import util.BaseActivity;
 import util.InitBean;
 
-public class CoachMainActivity extends BaseActivity {
+public class CoachMainActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView coachName;
     private TextView coachGender;
@@ -25,6 +28,8 @@ public class CoachMainActivity extends BaseActivity {
     private  TextView coachID;
     private RecyclerView recyclerView;
     private ArrayList<Member> coachMemberList=new ArrayList<>();
+
+    private Button scanBleDeviceButton;
 
     private  String coachLoginname;
     private  int coach_id;
@@ -41,6 +46,9 @@ public class CoachMainActivity extends BaseActivity {
         coachGender=findViewById(R.id.coach_gender);
         coachBirthday=findViewById(R.id.coach_birthday);
         coachID=findViewById(R.id.coach_ID);
+        scanBleDeviceButton=findViewById(R.id.scan_ble_device);
+        scanBleDeviceButton.setOnClickListener(this);
+
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView=findViewById(R.id.coach_member_recycler_view);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -55,6 +63,7 @@ public class CoachMainActivity extends BaseActivity {
 
         coachID.setText(intent.getStringExtra("coachID"));
     }
+
     private int getCoachID(ArrayList<Coach> coachArrayList,String coachLoginname){
         Iterator<Coach> coachIterator=coachArrayList.iterator();
         Coach coach;
@@ -78,5 +87,15 @@ public class CoachMainActivity extends BaseActivity {
             }
         }
         return  coachMemberList;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.scan_ble_device:
+                Intent intent=new Intent(this, BleScannerAdvertiserActivity.class);
+                v.getContext().startActivity(intent);
+                break;
+        }
     }
 }

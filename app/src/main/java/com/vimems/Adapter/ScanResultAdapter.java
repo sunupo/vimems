@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimems.Ble;
+package com.vimems.Adapter;
 
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.vimems.Ble.ScannerFragment;
 import com.vimems.R;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ScanResultAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
 
-    ScanResultAdapter(Context context, LayoutInflater inflater) {
+    public ScanResultAdapter(Context context, LayoutInflater inflater) {
         super();
         mContext = context;
         mInflater = inflater;
@@ -75,6 +76,8 @@ public class ScanResultAdapter extends BaseAdapter {
         TextView deviceAddressView = (TextView) view.findViewById(R.id.device_address);
         TextView lastSeenView = (TextView) view.findViewById(R.id.last_seen);
 
+        //ScanResult 实现Parcelable接口
+        // Parcel类，提供了一套机制，可以将序列化之后的数据写入一个共享内存中，其他进程通过Parcel可以从这块共享内存读出字节流，并反序列化成对象
         ScanResult scanResult = mArrayList.get(position);
 
         String name = scanResult.getDevice().getName();
@@ -113,9 +116,11 @@ public class ScanResultAdapter extends BaseAdapter {
 
         if (existingPosition >= 0) {
             // Device is already in list, update its record.
+            //是为了判断新的设备是否是原来已经扫描过并显示在列表上的设备，如果是，根据Mac地址就能得到这个设备的原来的位置，继续把该设备的位置设为原来的位置
             mArrayList.set(existingPosition, scanResult);
         } else {
             // Add new Device's ScanResult to list.
+            //如果是新的设备，那么就添加到追加到链表的后边
             mArrayList.add(scanResult);
         }
     }

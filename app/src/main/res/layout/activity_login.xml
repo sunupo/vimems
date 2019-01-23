@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_launcher_background" />
+                android:src="@drawable/ic_launcher_foreground" />
 
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -57,6 +57,8 @@
                         android:id="@+id/username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusedByDefault="false"
+                        android:textIsSelectable="false"
                         android:hint="@string/prompt_email"
                         android:inputType="text"
                         android:maxLines="1"
@@ -85,6 +87,8 @@
                         android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusedByDefault="false"
+                        android:textIsSelectable="false"
                         android:hint="@string/prompt_password"
                         android:inputType="textPassword"
                         android:maxLines="1"

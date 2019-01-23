@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vimems">
+    package="com.vimems"
+    android:versionCode="1"
+    android:versionName="1.0">
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
@@ -20,7 +19,10 @@
         <activity
             android:name=".login.LoginActivity"
             android:label="@string/title_activity_login"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden|stateUnchanged">
+            <!--android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"-->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +36,19 @@
             android:name=".admin.CoachDetailActivity"
             android:launchMode="singleTask" />
         <activity android:name=".admin.AddCoach" />
+
+        <activity
+            android:name=".Ble.BleScannerAdvertiserActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        </activity>
+
+        <service
+            android:name=".Ble.AdvertiserService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+
     </application>
 
 </manifest>

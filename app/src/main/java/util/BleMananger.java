@@ -34,6 +34,7 @@ public class BleMananger {
 
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
     private AdvertiseCallback mAdvertiseCallback;
+    private  ScanCallback mScanCallBack;
     private BluetoothDevice mBluetoothDevice;
     private BluetoothGatt mBluetoothGatt;
     private boolean isScanning = false;
@@ -74,6 +75,31 @@ public class BleMananger {
                 .setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT)
                 .build();
     }
+    private class SampleScanCallback extends ScanCallback{
+        public SampleScanCallback() {
+            super();
+        }
+
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+            byte[] scanRecord=result.getScanRecord().getBytes();
+            //todo 把scanRecord数组转换成16进制字符串
+            Log.e(TAG, "onScanResult:result.getScanRecord().getBytes().toString()= "+scanRecord.toString() );
+            Log.e("TAG","onScanResult :result.getScanRecord()="+result.getScanRecord());
+            Log.e("TAG","onScanResult :result.getScanRecord().toString()="+result.getScanRecord().toString());
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+        }
+    }
     public void startLeScan(){
         if (mBluetoothLeScanner == null) {
             return;
@@ -83,28 +109,9 @@ public class BleMananger {
         }
         isScanning=true;
 
+        mScanCallBack= new SampleScanCallback();
 
-        mBluetoothLeScanner.startScan(scanFilterList,scanSettings,new ScanCallback() {
-            @Override
-            public void onScanResult(int callbackType, ScanResult result) {
-                super.onScanResult(callbackType, result);
-                byte[] scanRecord=result.getScanRecord().getBytes();
-                //todo 把scanRecord数组转换成16进制字符串
-                Log.e(TAG, "onScanResult:result.getScanRecord().getBytes().toString()= "+scanRecord.toString() );
-                Log.e("TAG","onScanResult :result.getScanRecord()="+result.getScanRecord());
-                Log.e("TAG","onScanResult :result.getScanRecord().toString()="+result.getScanRecord().toString());
-            }
-
-            @Override
-            public void onBatchScanResults(List<ScanResult> results) {
-                super.onBatchScanResults(results);
-            }
-
-            @Override
-            public void onScanFailed(int errorCode) {
-                super.onScanFailed(errorCode);
-            }
-        });
+        mBluetoothLeScanner.startScan(scanFilterList,scanSettings,mScanCallBack);
 
     }
     /*在5.0之前扫描BLE设备 使用的方法是 ：

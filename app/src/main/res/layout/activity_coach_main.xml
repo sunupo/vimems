@@ -83,7 +83,7 @@
             android:layout_height="wrap_content" />
         <android.support.v7.widget.AppCompatButton
             android:text="@string/admin_check_ble_device"
-            android:id="@+id/admin_check_ble_device"
+            android:id="@+id/scan_ble_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>

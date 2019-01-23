@@ -25,6 +25,7 @@ public class CoachDetailActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private ArrayList<Member> coachMemberList=new ArrayList<>();
 
+
     private  String coach_Name;
     private int coach_id;
     @Override
@@ -38,6 +39,8 @@ public class CoachDetailActivity extends BaseActivity {
         coachGender=findViewById(R.id.coach_gender);
         coachBirthday=findViewById(R.id.coach_birthday);
         coachID=findViewById(R.id.coach_ID);
+
+
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView=findViewById(R.id.coach_member_recycler_view);
         recyclerView.setLayoutManager(linearLayoutManager);

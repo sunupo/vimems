@@ -48,4 +48,25 @@
     <string name="coach_name">教练姓名</string>
     <string name="add_coach_button">增加教练按钮</string>
 
+    <string name="refresh">Refresh</string>
+    <string name="empty_list">empty_list</string>
+    <string name="scan_start_toast">scan_start_toast</string>
+    <string name="seconds">seconds</string>
+    <string name="already_scanning">already_scanning</string>
+    <string name="activity_ble_scanner_advitiser_title">BleScanAdv</string>
+    <string name="bt_ads_not_supported">bt_ads_not_supported</string>
+    <string name="bt_not_supported">bt_not_supported</string>
+    <string name="bt_not_enabled_leaving">bt_not_enabled_leaving</string>
+    <string name="start_error_prefix">start_error_prefix</string>
+    <string name="start_error_already_started">start_error_already_started</string>
+    <string name="start_error_too_large">start_error_too_large</string>
+    <string name="start_error_unsupported">start_error_unsupported</string>
+    <string name="start_error_internal">start_error_internal</string>
+    <string name="start_error_too_many">start_error_too_many</string>
+    <string name="advertising_timedout">advertising_timedout</string>
+    <string name="start_error_unknown">start_error_unknown</string>
+    <string name="broadcast_device">Broadcast Device</string>
+    <string name="bt_null">bt_null</string>
+    <string name="refresh_scan_button">Scan BLE</string>
+
 </resources>
