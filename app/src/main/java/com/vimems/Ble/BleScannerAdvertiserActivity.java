@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,12 +32,13 @@ import android.widget.Toast;
 
 import com.vimems.R;
 
+import util.BaseActivity;
 import util.Constants;
 
 /**
  * Setup display fragments and ensure the device supports Bluetooth.
  */
-public class BleScannerAdvertiserActivity extends FragmentActivity {
+public class BleScannerAdvertiserActivity extends BaseActivity {
 
     private BluetoothAdapter mBluetoothAdapter;
     private  ScannerFragment scannerFragment;
@@ -49,6 +52,8 @@ public class BleScannerAdvertiserActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_scanner);
         setTitle(R.string.activity_ble_scanner_advitiser_title);
+       /* Toolbar toolbar=findViewById(R.id.tool_bar);
+        this.setSupportActionBar(toolbar);*/
 
         refreshScanButton=findViewById(R.id.refresh_scan_button);
         refreshScanButton.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +99,11 @@ public class BleScannerAdvertiserActivity extends FragmentActivity {
         }
     }
 
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.scanner_menu,menu);
+        return true;
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

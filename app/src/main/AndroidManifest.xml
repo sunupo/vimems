@@ -39,7 +39,7 @@
 
         <activity
             android:name=".Ble.BleScannerAdvertiserActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+            ><!--android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
         </activity>
 
         <service

@@ -45,9 +45,11 @@ public class AdvertiserService extends Service {
      * */
     public static boolean running = false;
 
+//        failureIntent.setAction(ADVERTISING_FAILED);
     public static final String ADVERTISING_FAILED =
         "com.example.android.bluetoothadvertisements.advertising_failed";
 
+//    failureIntent.putExtra(ADVERTISING_FAILED_EXTRA_CODE, errorCode);
     public static final String ADVERTISING_FAILED_EXTRA_CODE = "failureCode";
 
     public static final int ADVERTISING_TIMED_OUT = 6;
