@@ -1,7 +1,11 @@
 package com.vimems.mainactivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,7 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.vimems.Adapter.MemberAdapter;
+import com.vimems.Ble.AppBluetoothGatt.GattMainActivity;
 import com.vimems.Ble.BleScannerAdvertiserActivity;
+import com.vimems.Ble.DeviceBluetoothGattServer.GattServerActivity;
 import com.vimems.R;
 import com.vimems.bean.Coach;
 import com.vimems.bean.Member;
@@ -31,6 +37,9 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
 
     private Button scanBleDeviceButton;
 
+    private Button asGattServer;
+    private  Button asGattCentral;
+
     private  String coachLoginname;
     private  int coach_id;
 
@@ -48,6 +57,11 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
         coachID=findViewById(R.id.coach_ID);
         scanBleDeviceButton=findViewById(R.id.scan_ble_device);
         scanBleDeviceButton.setOnClickListener(this);
+
+        asGattServer=findViewById(R.id.set_gatt_server_periphery);
+        asGattServer.setOnClickListener(this);
+        asGattCentral=findViewById(R.id.as_gatt_central);
+        asGattCentral.setOnClickListener(this);
 
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView=findViewById(R.id.coach_member_recycler_view);
@@ -95,6 +109,19 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
             case R.id.scan_ble_device:
                 Intent intent=new Intent(this, BleScannerAdvertiserActivity.class);
                 v.getContext().startActivity(intent);
+                break;
+            case  R.id.set_gatt_server_periphery:
+                Intent gattServerIntent=new Intent(this, GattServerActivity.class);
+                v.getContext().startActivity(gattServerIntent);
+                break;
+            case  R.id.as_gatt_central:
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
+                }else {
+                    Intent gattMainActivityIntent=new Intent(this, GattMainActivity.class);
+                    v.getContext().startActivity(gattMainActivityIntent);
+                }
+
                 break;
         }
     }
