@@ -16,6 +16,8 @@
 
 package com.vimems.Ble.AppBluetoothGatt;
 
+import com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile;
+
 import java.util.HashMap;
 
 /**
@@ -30,9 +32,12 @@ public class SampleGattAttributes {
         // Sample Services.
         attributes.put("0000180d-0000-1000-8000-00805f9b34fb", "Heart Rate Service");
         attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
+        attributes.put("0000fee0-0000-1000-8000-00805f9b34fb", "xiao mi Service");
+        attributes.put("00001106-0000-1000-8000-00805f9b34fb", "Muscle Para Service");
         // Sample Characteristics.
         attributes.put(HEART_RATE_MEASUREMENT, "Heart Rate Measurement");
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
+        attributes.put(ParaProfile.MUSCLE1_CHARACTERISTIC.toString(),"MUSCLE CHARACTERISTICS");
     }
 
     public static String lookup(String uuid, String defaultName) {

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.vimems.Ble.AppBluetoothGatt.DeviceControlActivity;
+import com.vimems.Ble.AppBluetoothGatt.GattPeripheralDetailActivity;
 import com.vimems.R;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class GattDeviceAdapter extends RecyclerView.Adapter<GattDeviceAdapter.Vi
                 int position=viewHolder.getAdapterPosition();
                 BluetoothDevice bluetoothDevice=bluetoothDeviceArrayList.get(position);
 
-                Intent intent=new Intent(v.getContext(),DeviceControlActivity.class);
+                Intent intent=new Intent(v.getContext(),GattPeripheralDetailActivity.class);
                 intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, bluetoothDevice.getName());
                 intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, bluetoothDevice.getAddress());
                /* if(GattMainActivity.mScanning){

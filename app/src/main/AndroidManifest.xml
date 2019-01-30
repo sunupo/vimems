@@ -20,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Ble.AppBluetoothGatt.GattMainActivity"></activity>
+        <activity android:name=".Ble.DeviceBluetoothGattServer.DeviceGattServerActivity"/>
         <activity android:name=".Ble.BleScannerActivity" />
         <activity android:name=".mainactivity.CoachMainActivity" />
         <activity
@@ -48,14 +49,15 @@
 
         <service
             android:name=".Ble.AdvertiserService"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="false"></service>
         <service
             android:name=".Ble.AppBluetoothGatt.BluetoothLeService"
             android:enabled="true" />
 
-        <activity android:name=".Ble.DeviceBluetoothGattServer.GattServerActivity" />
-        <activity android:name=".Ble.AppBluetoothGatt.DeviceControlActivity" />
+        <!--&lt;!&ndash;<activity android:name=".Ble.DeviceBluetoothGattServer.GattServerActivity" />
+        <activity android:name=".Ble.AppBluetoothGatt.DeviceControlActivity" />-->
+        <activity android:name=".Ble.AppBluetoothGatt.GattPeripheralDetailActivity"/>
 
     </application>
 

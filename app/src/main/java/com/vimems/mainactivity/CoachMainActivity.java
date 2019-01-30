@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.vimems.Adapter.MemberAdapter;
 import com.vimems.Ble.AppBluetoothGatt.GattMainActivity;
 import com.vimems.Ble.BleScannerAdvertiserActivity;
-import com.vimems.Ble.DeviceBluetoothGattServer.GattServerActivity;
+import com.vimems.Ble.DeviceBluetoothGattServer.DeviceGattServerActivity;
 import com.vimems.R;
 import com.vimems.bean.Coach;
 import com.vimems.bean.Member;
@@ -111,7 +111,7 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
                 v.getContext().startActivity(intent);
                 break;
             case  R.id.set_gatt_server_periphery:
-                Intent gattServerIntent=new Intent(this, GattServerActivity.class);
+                Intent gattServerIntent=new Intent(this, DeviceGattServerActivity.class);
                 v.getContext().startActivity(gattServerIntent);
                 break;
             case  R.id.as_gatt_central:

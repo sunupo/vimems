@@ -31,13 +31,18 @@ public class TimeProfile {
     private static final String TAG = TimeProfile.class.getSimpleName();
 
     /* Current Time Service UUID */
+    //service 的uuid
     public static UUID TIME_SERVICE = UUID.fromString("00001805-0000-1000-8000-00805f9b34fb");
     /* Mandatory Current Time Information Characteristic */
+    //Current_Time 是characteristic notify read
     public static UUID CURRENT_TIME    = UUID.fromString("00002a2b-0000-1000-8000-00805f9b34fb");
-    /* Optional Local Time Information Characteristic */
-    public static UUID LOCAL_TIME_INFO = UUID.fromString("00002a0f-0000-1000-8000-00805f9b34fb");
     /* Mandatory Client Characteristic Config Descriptor */
+    //CLIENT_CONFIG是一个descriptor CURRENT_TIME.添加一个CLIENT_CONFIG
     public static UUID CLIENT_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    /* Optional Local Time Information Characteristic */
+    //LOCAL_TIME_INFO是一个characteristic，read
+    public static UUID LOCAL_TIME_INFO = UUID.fromString("00002a0f-0000-1000-8000-00805f9b34fb");
+
 
     // Adjustment Flags
     public static final byte ADJUST_NONE     = 0x0;
@@ -111,6 +116,7 @@ public class TimeProfile {
     }
 
     /* Time bucket constants for local time information */
+    //时间段常量，事件元常量
     private static final int FIFTEEN_MINUTE_MILLIS = 900000;
     private static final int HALF_HOUR_MILLIS = 1800000;
 
