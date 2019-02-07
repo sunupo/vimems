@@ -1,19 +1,13 @@
 package com.vimems.bean;
 
-public class Admin {
+import org.litepal.crud.LitePalSupport;
+
+public class Admin extends LitePalSupport {
     private int adminID;
     private String adminName;
     private String loginName;
     private String adminPassword;
     private String gender;
-
-    public Admin(int adminID, String adminName, String loginName, String adminPassword, String gender) {
-        this.adminID = adminID;
-        this.adminName = adminName;
-        this.loginName = loginName;
-        this.adminPassword = adminPassword;
-        this.gender = gender;
-    }
 
     public int getAdminID() {
         return adminID;

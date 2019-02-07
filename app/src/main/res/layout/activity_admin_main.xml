@@ -5,6 +5,69 @@
     android:layout_height="match_parent">
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="管理员ID:"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/admin_ID"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="姓名:"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/admin_name"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="登录名:"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/admin_login_name"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="性别"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/admin_gender"/>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/add_coach_button"

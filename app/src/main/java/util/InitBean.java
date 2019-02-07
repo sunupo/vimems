@@ -1,5 +1,9 @@
 package util;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.util.Log;
+
 import com.vimems.AdapterItem.CoachItem;
 import com.vimems.AdapterItem.MemberItem;
 import com.vimems.R;
@@ -7,99 +11,145 @@ import com.vimems.bean.Admin;
 import com.vimems.bean.Coach;
 import com.vimems.bean.Member;
 
+import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
 
 public class InitBean {
-    public static boolean isInit=false;
 
     public static ArrayList<Admin> adminArrayList=new ArrayList<>();
-    public static ArrayList<CoachItem> coachItemArrayList=new ArrayList<>();
+   // public static ArrayList<CoachItem> coachItemArrayList=new ArrayList<>();
     public static ArrayList<Coach> coachArrayList=new ArrayList<>();
-    public static ArrayList<MemberItem> memberItemArrayList=new ArrayList<>();
+   // public static ArrayList<MemberItem> memberItemArrayList=new ArrayList<>();
     public static ArrayList<Member> memberArrayList=new ArrayList<>();
 
-    public static void initAdminList(){
-        for (int i = 0; i <10; i++) {
-            adminArrayList.add(new Admin(i,"adminName"+i,"adminLoginName"+i,"123456","男"));
-        }
+    public static String TAG="INITLITEPAL";
+
+//
+//
+////    begin
+//    //使用SQLiteOpenHelper
+//
+//    /*public static VimEmsDatabaseHelper getDBHelper(Context context){
+//        return new VimEmsDatabaseHelper(context,"vimems.db",null,1);
+//    }
+//
+//    public static void initTable(Context context){
+//        initAdminTable(context);
+//        initCoachTable(context);
+//        initMemberTable(context);
+//    }
+//    private static  void initAdminTable(Context context){
+//        ContentValues adminValues=new ContentValues();
+//        for(int i=0;i<10;i++){
+//            adminValues.put("adminName","adminName"+i);
+//            adminValues.put("loginName","adminLoginName"+i);
+//            adminValues.put("adminPassword","123456");
+//            adminValues.put("gender",(i%2==0)?"male":"female");
+//            getDBHelper(context).getWritableDatabase().insert("admin",null,adminValues);
+//        }
+//    }
+//    private static void initCoachTable(Context context){
+//        ContentValues coachValues=new ContentValues();
+//        for (int i = 0; i < 10; i++) {
+//            coachValues.put("adminID",i/5+1);
+//            coachValues.put("imageID",R.drawable.ic_launcher_foreground);
+//            coachValues.put("coachName","coachName"+i);
+//            coachValues.put("coachLoginName","coachLoginName"+i);
+//            coachValues.put("loginPassword","123456");
+//            coachValues.put("gender",(i%2==0)?"male":"female");
+//            coachValues.put("birthdate",new Date().toString());
+//            coachValues.put("coachRank",(i%3==0)?"A":(i%3==1)?"B":"C");
+//            getDBHelper(context).getWritableDatabase().insert("coach",null,coachValues);
+//        }
+//    }
+//
+//    private static  void initMemberTable(Context context){
+//        ContentValues memberValues=new ContentValues();
+//        for (int i = 0; i <100 ; i++) {
+//            memberValues.put("coachID",i/10+1);
+//            memberValues.put("imageID",R.drawable.ic_launcher_foreground);
+//            memberValues.put("memberName","memberName"+i);
+//            memberValues.put("gender",(i%2==0)?"male":"female");
+//            memberValues.put("birthdate",new Date().toString());
+//            memberValues.put("height",1.8);
+//            memberValues.put("weight",70);
+//            memberValues.put("date",new Date().toString());
+//            memberValues.put("age",20);
+//            getDBHelper(context).getWritableDatabase().insert("member",null,memberValues);
+//        }
+//    }*/
+////    end
+//
+
+    /**
+     * 使用LitePal添加数据
+     */
+    public static void initLitePalTable(){
+
+        initAdmin();
+        initCoach();
+        initMember();
+        adminArrayList= (ArrayList<Admin>) LitePal.findAll(Admin.class);
+        coachArrayList=(ArrayList<Coach>)LitePal.findAll(Coach.class);
+        memberArrayList=(ArrayList<Member>)LitePal.findAll(Member.class);
     }
-    public static void initCoachItemList(){
-        Coach[] coachs=new Coach[8];
-        coachs[0]=new Coach(1,1,R.drawable.ic_launcher_background,"coachName1","coachLoginName1","123456","男",new Date(),"C");
-        coachs[1]=new Coach(2,1,R.drawable.ic_launcher_background,"coachName2","coachLoginName2","123456","男",new Date(),"B");
-        coachs[2]=new Coach(3,1,R.drawable.ic_launcher_background,"coachName3","coachLoginName3","123456","男",new Date(),"A");
-        coachs[3]=new Coach(4,1,R.drawable.ic_launcher_background,"coachName4","coachLoginName4","123456","女",new Date(),"B");
-        coachs[4]=new Coach(5,1,R.drawable.ic_launcher_background,"coachName5","coachLoginName5","123456","女",new Date(),"C");
-        coachs[5]=new Coach(6,2,R.drawable.ic_launcher_background,"coachName6","coachLoginName6","123456","女",new Date(),"A");
-        coachs[6]=new Coach(7,2,R.drawable.ic_launcher_background,"coachName7","coachLoginName7","123456","女",new Date(),"B");
-        coachs[7]=new Coach(8,2,R.drawable.ic_launcher_background,"coachName8","coachLoginName8","123456","女",new Date(),"A");
 
-        for (int i = 0; i < 8; i++) {
-            coachArrayList.add(coachs[i]);
+    public static void initAdmin(){
+        Admin[] admins=new Admin[10];
+        for (int i = 0; i <admins.length ; i++) {
+            admins[i]=new Admin();
+            admins[i].setAdminID(i);
+            admins[i].setAdminName("adminName"+i);
+            admins[i].setLoginName("adminLoginName"+i);
+            admins[i].setAdminPassword("123456");
+            admins[i].setGender((i%2==0)?"male":"female");
+            admins[i].save();
         }
-        for(int i=0;i<1;i++){
-            CoachItem item1=new CoachItem(coachs[0].getCoachLoginName(), R.drawable.ic_launcher_background,coachs[0].getCoachID());
-            coachItemArrayList.add(item1);
-            CoachItem item2=new CoachItem(coachs[1].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[1].getCoachID());
-            coachItemArrayList.add(item2);
-            CoachItem item3=new CoachItem(coachs[2].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[2].getCoachID());
-            coachItemArrayList.add(item3);
-            CoachItem item4=new CoachItem(coachs[3].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[3].getCoachID());
-            coachItemArrayList.add(item4);
-            CoachItem item5=new CoachItem(coachs[4].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[4].getCoachID());
-            coachItemArrayList.add(item5);
-            CoachItem item6=new CoachItem(coachs[5].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[5].getCoachID());
-            coachItemArrayList.add(item6);
-            CoachItem item7=new CoachItem(coachs[6].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[6].getCoachID());
-            coachItemArrayList.add(item7);
-            CoachItem item8=new CoachItem(coachs[7].getCoachLoginName(),R.drawable.ic_launcher_background,coachs[7].getCoachID());
-            coachItemArrayList.add(item8);
-
-        }
+        Log.i(TAG, "initAdmin: ");
     }
-    public static  void initMemberItemList(){
 
-        Member[]  members=new Member[110];
-        for (int i = 0; i <=20; i++) {
-            members[i]=new Member("member"+i,i,1,R.drawable.ic_launcher_foreground,"男",new Date(),1.7,65,new Date(),22);
+    public static void initCoach(){
+
+        Coach[] coaches=new Coach[30];
+        for (int i = 0; i <coaches.length ; i++) {
+            coaches[i]=new Coach();
+            coaches[i].setCoachID(i);
+            coaches[i].setAdminID(i/3);
+            coaches[i].setImageID(R.drawable.ic_launcher_foreground);
+            coaches[i].setCoachName("coachName"+i);
+            coaches[i].setCoachLoginName("coachLoginName"+i);
+            coaches[i].setLoginPassword("123456");
+            coaches[i].setGender((i%2==0)?"male":"female");
+            coaches[i].setBirthdate(new Date());
+            coaches[i].setCoachRank((i%3==0)?"A":(i%3==1)?"B":"C");
+            coaches[i].save();
         }
-        for (int i = 21; i <=40; i++) {
-            members[i]=new Member("member"+i,i,2,R.drawable.ic_launcher_foreground,"男",new Date(),1.7,65,new Date(),22);
-        }
-        for (int i = 41; i <=60; i++) {
-            members[i]=new Member("member"+i,i,3,R.drawable.ic_launcher_foreground,"男",new Date(),1.7,65,new Date(),22);
-        }
-        for (int i = 61; i <=70; i++) {
-            members[i]=new Member("member"+i,i,4,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
-        }
-        for (int i = 71; i <=80; i++) {
-            members[i]=new Member("member"+i,i,5,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
-        }
-        for (int i = 81; i <=90; i++) {
-            members[i]=new Member("member"+i,i,6,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
-        }
-        for (int i = 91; i <=100; i++) {
-            members[i]=new Member("member"+i,i,7,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
-        }
-        for (int i = 101; i <110; i++) {
-            members[i]=new Member("member"+i,i,8,R.drawable.ic_launcher_foreground,"女",new Date(),1.7,65,new Date(),18);
-        }
+        Log.i(TAG, "initMember: ");
+    }
+    public static void initMember(){
+        Member[] members=new Member[600];
         for (int i = 0; i < members.length; i++) {
-            memberArrayList.add(members[i]);
+            members[i]=new Member();
+            members[i].setMemberID(i);
+            members[i].setCoachID(i/20);
+            members[i].setImageID(R.drawable.ic_launcher_foreground);
+            members[i].setMemberName("memberName"+i);
+            members[i].setGender((i%2==0)?"male":"female");
+            members[i].setBirthdate(new Date());
+            members[i].setHeight(1.8);
+            members[i].setWeight(70);
+            members[i].setDate(new Date());
+            members[i].setAge(18);
+            members[i].save();
         }
-        for (int i = 0; i <memberArrayList.size() ; i++) {
-            memberItemArrayList.add(new MemberItem(memberArrayList.get(i).getMemberName(),R.drawable.ic_launcher_background));
-        }
+        Log.i(TAG, "initMember: ");
     }
-    public static int getCoachNum(ArrayList<CoachItem> coachItemArrayList){
-        return coachItemArrayList.size();
-    }
-    public static int getTotalMemberNum(ArrayList<Member> memberArrayList ){
-        return memberArrayList.size();
-    }
+
     public static int getCoachMemberNum(int coachID,ArrayList<Member> memberArrayList){
 
         int coachMemberCount=0;
@@ -113,5 +163,6 @@ public class InitBean {
         }
         return coachMemberCount;
     }
+
 
 }

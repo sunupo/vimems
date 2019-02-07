@@ -1,39 +1,21 @@
 package com.vimems.bean;
 
+import org.litepal.crud.LitePalSupport;
+
 import java.util.Date;
 
-public class Member {
-    private String memberName;
+public class Member extends LitePalSupport {
+
     private int memberID;
     private int coachID;
     private  int imageID;
+    private String memberName;
     private String gender;
     private Date birthdate;
     private double height;
     private double weight;
     private Date date;
     private int age;
-
-    public Member(String memberName, int memberID, int coachID, int imageID, String gender, Date birthdate, double height, double weight, Date date, int age) {
-        this.memberName = memberName;
-        this.memberID = memberID;
-        this.coachID = coachID;
-        this.imageID = imageID;
-        this.gender = gender;
-        this.birthdate = birthdate;
-        this.height = height;
-        this.weight = weight;
-        this.date = date;
-        this.age = age;
-    }
-
-    public String getMemberName() {
-        return memberName;
-    }
-
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
-    }
 
     public int getMemberID() {
         return memberID;
@@ -57,6 +39,14 @@ public class Member {
 
     public void setImageID(int imageID) {
         this.imageID = imageID;
+    }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
     }
 
     public String getGender() {
@@ -112,8 +102,10 @@ public class Member {
         return "Member{" +
                 "memberID=" + memberID +
                 ", coachID=" + coachID +
+                ", imageID=" + imageID +
+                ", memberName='" + memberName + '\'' +
                 ", gender='" + gender + '\'' +
-                ", birthdate='" + birthdate + '\'' +
+                ", birthdate=" + birthdate +
                 ", height=" + height +
                 ", weight=" + weight +
                 ", date=" + date +

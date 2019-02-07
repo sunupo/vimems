@@ -1,12 +1,14 @@
 package com.vimems.bean;
 
+import org.litepal.crud.LitePalSupport;
+
 import java.util.Date;
 
-public class Coach {
+public class Coach extends LitePalSupport {
     private int coachID;
     private int adminID;
     private int imageID;
-    //TODO
+
     private String coachName;
     private String coachLoginName;
     private String loginPassword;
@@ -14,84 +16,13 @@ public class Coach {
     private Date birthdate;
     private  String coachRank;
 
-    public Coach(int coachID, int adminID, int imageID, String coachName, String coachLoginName, String loginPassword, String gender, Date birthdate, String coachRank) {
-        this.coachID = coachID;
-        this.adminID = adminID;
-        this.imageID = imageID;
-        this.coachName = coachName;
-        this.coachLoginName = coachLoginName;
-        this.loginPassword = loginPassword;
-        this.gender = gender;
-        this.birthdate = birthdate;
-        this.coachRank = coachRank;
-    }
-
-    public String getCoachName() {
-        return coachName;
-    }
-
-    public void setCoachName(String coachName) {
-        this.coachName = coachName;
-    }
-
-    public void setCoachLoginName(String coachLoginName) {
-        this.coachLoginName = coachLoginName;
-    }
-
-    public String getLoginPassword() {
-        return loginPassword;
-    }
-
-    public void setLoginPassword(String loginPassword) {
-        this.loginPassword = loginPassword;
-    }
 
     public int getCoachID() {
         return coachID;
     }
 
-    public int getAdminId() {
-        return adminID;
-    }
-
-    public String getCoachLoginName() {
-        return coachLoginName;
-    }
-
-    public String getLoginPWD() {
-        return loginPassword;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public Date getBirthdate() {
-        return birthdate;
-    }
-
     public void setCoachID(int coachID) {
         this.coachID = coachID;
-    }
-
-    public void setAdminId(int adminID) {
-        this.adminID = adminID;
-    }
-
-    public void setcoachLoginName(String coachLoginName) {
-        this.coachLoginName = coachLoginName;
-    }
-
-    public void setLoginPWD(String loginPassword) {
-        this.loginPassword = loginPassword;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
     }
 
     public int getAdminID() {
@@ -108,6 +39,46 @@ public class Coach {
 
     public void setImageID(int imageID) {
         this.imageID = imageID;
+    }
+
+    public String getCoachName() {
+        return coachName;
+    }
+
+    public void setCoachName(String coachName) {
+        this.coachName = coachName;
+    }
+
+    public String getCoachLoginName() {
+        return coachLoginName;
+    }
+
+    public void setCoachLoginName(String coachLoginName) {
+        this.coachLoginName = coachLoginName;
+    }
+
+    public String getLoginPassword() {
+        return loginPassword;
+    }
+
+    public void setLoginPassword(String loginPassword) {
+        this.loginPassword = loginPassword;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
     }
 
     public String getCoachRank() {

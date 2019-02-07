@@ -15,9 +15,13 @@ import android.widget.Toast;
 import com.vimems.R;
 import com.vimems.bean.Admin;
 import com.vimems.bean.Coach;
+import com.vimems.bean.Member;
 import com.vimems.mainactivity.AdminMainActivity;
 import com.vimems.mainactivity.CoachMainActivity;
 
+import org.litepal.LitePal;
+
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import okhttp3.OkHttpClient;
@@ -43,12 +47,14 @@ public class LoginActivity extends BaseActivity {
     private String password;
     private final String address="www.vimems.com";
     private boolean loginFlag=false;
-    /*    1、根据Context获取SharedPreferences对象　　2、利用edit()方法获取Editor对象。　　3、通过Editor对象存储key-value键值对数据。　  4、通过commit()方法提交数据。 */
     private SharedPreferences sp=null;
+
+    private boolean firstBootstrap=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = this.getSharedPreferences("userinfo", Context.MODE_PRIVATE);
 //        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 
@@ -57,18 +63,29 @@ public class LoginActivity extends BaseActivity {
 
         setContentView(R.layout.activity_login);
 
-        if(InitBean.isInit==false){
-            InitBean.initCoachItemList();
-            InitBean.initMemberItemList();
-            InitBean.initAdminList();
-            InitBean.isInit=true;
+        firstBootstrap=sp.getBoolean("firstBootstrap",true);
+        if(firstBootstrap){
+            //第一次安装时，初始化Admin、Coach、Member数据库表，初始化InitBean.adminArrayList等
+            LitePal.getDatabase();
+            InitBean.initLitePalTable();
+            Toast.makeText(this,"database has been initialed ",Toast.LENGTH_SHORT).show();
+
+            SharedPreferences.Editor editor = sp.edit();
+            //新建一个Editor对象
+            editor.putBoolean("firstBootstrap",false);
+            //提交数据
+            editor.commit();
+        }else{
+            //数据库已经创建成功，初始化列表
+            InitBean.adminArrayList= (ArrayList<Admin>) LitePal.findAll(Admin.class);
+            InitBean.coachArrayList=(ArrayList<Coach>)LitePal.findAll(Coach.class);
+            InitBean.memberArrayList=(ArrayList<Member>)LitePal.findAll(Member.class);
         }
 
         editTextUsername=findViewById(R.id.username);
         editTextPassword=findViewById(R.id.password);
         savePassword=findViewById(R.id.save_password);
 
-        sp = this.getSharedPreferences("userinfo", Context.MODE_PRIVATE);
         username = sp.getString("USERNAME", ""); //获取sp里面存储的数据
         password = sp.getString("PASSWORD","");
         if(sp.getBoolean("ISCHECKED",false)){
@@ -103,6 +120,10 @@ public class LoginActivity extends BaseActivity {
     //本地管理员登陆
     private void localAdminLogin(String username,String password){
         loginFlag=false;
+
+        Toast.makeText(this,"用户名为："+LitePal.find(Admin.class,Integer.parseInt(username.substring(username.length()-1,username.length()))+1).getAdminName(),Toast.LENGTH_SHORT).show();
+
+
         Iterator<Admin> adminIterator=InitBean.adminArrayList.iterator();
         String tempName;
         String tempPassword;
@@ -141,6 +162,8 @@ public class LoginActivity extends BaseActivity {
     //本地教练登录
     private void localCoachLogin(String username,String password) {
         loginFlag=false;
+//        Toast.makeText(this,"localCoachLogin"+LitePal.findAll(Coach.class).size(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"用户名为："+LitePal.find(Coach.class,Integer.parseInt(username.substring(username.length()-1,username.length()))+1).getCoachName()+"总coach数目"+InitBean.coachArrayList.size(),Toast.LENGTH_SHORT).show();
 
         Iterator<Coach> coachIterator = InitBean.coachArrayList.iterator();
         String tempName;
@@ -149,7 +172,7 @@ public class LoginActivity extends BaseActivity {
         while (coachIterator.hasNext()) {
             tempCoach = coachIterator.next();
             tempName = tempCoach.getCoachLoginName();
-            tempPassword = tempCoach.getLoginPWD();
+            tempPassword = tempCoach.getLoginPassword();
             if (tempName.equals(username) && tempPassword.equals(password)) {
                 loginFlag = true;
                 break;

@@ -31,8 +31,8 @@
     <string name="add_image_ID">头像</string>
     <string name="add_coach_username">添加教练名</string>
     <string name="add_coach_login_name">添加教练登录名</string>
-    <string name="add_login_password">添加教练登录名</string>
-    <string name="add_coach_gender">添加教练登录密码</string>
+    <string name="add_coach_login_password">添加教练登录密码</string>
+    <string name="add_coach_gender">添加教练性别</string>
     <string name="add_coach_birthday">添加教练出生日期</string>
     <string name="add_coach_rank">默认教练评分</string>
     <integer name="login_button_alpha">1</integer>
@@ -91,5 +91,7 @@
     <string name="menu_disconnect">断开连接</string>
     <string name="menu_scan">开始扫描</string>
     <string name="menu_stop">停止扫描</string>
+    <string name="coach_gender_male">男</string>
+    <string name="coach_gender_female">女</string>
 
 </resources>

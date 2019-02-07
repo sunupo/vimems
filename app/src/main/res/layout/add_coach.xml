@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="500px"
             android:layout_height="wrap_content"
             android:text="@string/add_coach_ID"/>
         <android.support.v7.widget.AppCompatTextView
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="500px"
             android:layout_height="wrap_content"
             android:text="@string/add_admin_ID"/>
         <android.support.v7.widget.AppCompatTextView
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="500px"
             android:layout_height="wrap_content"
             android:text="@string/add_image_ID"/>
         <android.support.v7.widget.AppCompatTextView
@@ -48,11 +48,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="500px"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="@string/add_coach_username"/>
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/add_coach_username"
+            android:id="@+id/add_coach_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
@@ -61,8 +62,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="500px"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="@string/add_coach_login_name"/>
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/add_coach_login_name"
@@ -74,11 +76,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_login_password"/>
+            android:layout_width="500px"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/add_coach_login_password"/>
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/add_login_password"
+            android:id="@+id/add_coach_login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
@@ -87,13 +90,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="500px"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="@string/add_coach_gender"/>
-        <android.support.v7.widget.AppCompatEditText
+        <!--<android.support.v7.widget.AppCompatEditText
             android:id="@+id/add_coach_gender"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />-->
+        <RadioGroup
+            android:id="@+id/group_add_coach_gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/add_coach_gender_male"
+                android:text="@string/coach_gender_male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <RadioButton
+                android:id="@+id/add_coach_gender_female"
+                android:text="@string/coach_gender_female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RadioGroup>
+
     </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v7.widget.LinearLayoutCompat
@@ -101,14 +123,17 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="500px"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="@string/add_coach_birthday" />
 
-        <android.support.v7.widget.AppCompatEditText
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/add_coach_birthday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text=">>"
+            android:textAlignment="viewEnd"/>
     </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v7.widget.LinearLayoutCompat
@@ -116,8 +141,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="500px"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="@string/add_coach_rank"/>
         <RadioGroup
             android:id="@+id/group_add_coach_rank"

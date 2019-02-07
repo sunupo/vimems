@@ -65,6 +65,7 @@ public class CoachAdapter extends RecyclerView.Adapter<CoachAdapter.ViewHolder>{
                 Intent intent=new Intent(v.getContext(), CoachDetailActivity.class);
                 intent.putExtra("coachName",coach.getCoachName());
                 intent.putExtra("coachID",coach.getCoachID());
+
                 v.getContext().startActivity(intent);
 
             }
