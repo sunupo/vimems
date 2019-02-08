@@ -15,9 +15,13 @@ import android.widget.Toast;
 import com.vimems.R;
 import com.vimems.bean.Coach;
 
+import org.litepal.LitePal;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 import util.BaseActivity;
+import util.InitBean;
 
 public class AddCoach extends BaseActivity implements DatePickerDialog.OnDateSetListener {
     private Coach tempCoach;
@@ -117,6 +121,7 @@ public class AddCoach extends BaseActivity implements DatePickerDialog.OnDateSet
                 coach.setCoachRank(rankStr);
                 Toast.makeText(AddCoach.this, "保存成功？"+coach.save(), Toast.LENGTH_SHORT).show();
                 //coach.save();
+                InitBean.coachArrayList=(ArrayList<Coach>)LitePal.findAll(Coach.class);
             }
             /*
             * coaches[i]=new Coach();

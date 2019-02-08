@@ -4,12 +4,24 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="300px"
+            android:layout_height="wrap_content"
+            android:text="@string/coach_ID"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/coach_ID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="300px"
             android:layout_height="wrap_content"
             android:text="@string/coach_name"/>
         <android.support.v7.widget.AppCompatTextView
@@ -21,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="300px"
             android:layout_height="wrap_content"
             android:text="@string/coach_gender"/>
         <android.support.v7.widget.AppCompatTextView
@@ -30,15 +42,16 @@
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
 
+
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="300px"
             android:layout_height="wrap_content"
-            android:text="@string/coach_ID"/>
+            android:text="@string/coach_birthday"/>
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/coach_ID"
+            android:id="@+id/coach_birthday"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
@@ -47,23 +60,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="300px"
             android:layout_height="wrap_content"
             android:text="@string/coach_rank"/>
         <RadioGroup
+            android:id="@+id/radio_group_coach_rank_display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <RadioButton
                 android:text="@string/coach_rank_1"
+                android:id="@+id/coach_rank_display_a"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <RadioButton
                 android:text="@string/coach_rank_2"
+                android:id="@+id/coach_rank_display_b"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <RadioButton
                 android:text="@string/coach_rank_3"
+                android:id="@+id/coach_rank_display_c"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RadioGroup>
@@ -76,16 +93,17 @@
             android:id="@+id/admin_add_member"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <android.support.v7.widget.AppCompatButton
-            android:text="@string/admin_remove_member"
-            android:id="@+id/admin_remove_member"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+
         <android.support.v7.widget.AppCompatButton
             android:text="@string/admin_check_ble_device"
             android:id="@+id/scan_ble_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/show_bind_device"
+            android:text="@string/show_bind_device"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
     </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v7.widget.AppCompatButton

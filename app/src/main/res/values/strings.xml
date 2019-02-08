@@ -93,5 +93,9 @@
     <string name="menu_stop">停止扫描</string>
     <string name="coach_gender_male">男</string>
     <string name="coach_gender_female">女</string>
+    <string name="total_coach_num">教练总人数:</string>
+    <string name="show_bind_device">Binded Device</string>
+    <string name="bind_device_detail_connect">重连</string>
+    <string name="bind_device_detail_disconnect">断开</string>
 
 </resources>

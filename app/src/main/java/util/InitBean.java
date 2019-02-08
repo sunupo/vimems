@@ -150,6 +150,19 @@ public class InitBean {
         Log.i(TAG, "initMember: ");
     }
 
+    public static int getAdminCoachNum(int adminID,ArrayList<Coach> coachArrayList){
+        int adminCoachCount=0;
+        int getAdminID;
+        Iterator<Coach> iterator=coachArrayList.iterator();
+        while(iterator.hasNext()){
+            getAdminID=iterator.next().getAdminID();
+            if(getAdminID==adminID){
+                adminCoachCount++;
+            }
+        }
+        return  adminCoachCount;
+    }
+
     public static int getCoachMemberNum(int coachID,ArrayList<Member> memberArrayList){
 
         int coachMemberCount=0;

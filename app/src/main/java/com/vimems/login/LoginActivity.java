@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -106,13 +107,24 @@ public class LoginActivity extends BaseActivity {
                 username=editTextUsername.getText().toString();
                 password=editTextPassword.getText().toString();
                 //sendRequestWithOkHttp(address,username,password);
-               if(username.contains("adminLoginName")){
+                if(LitePal.where("loginName = ?",username).find(Admin.class).size()>0){
+                    Log.e("LitePal.where(\"loginName = ?\",username).find(Admin.class).size()",
+                            "size: "+LitePal.where("loginName = ?",username).find(Admin.class).size() );
+                    localAdminLogin(username,password);
+                }else if(LitePal.where("coachLoginName = ?",username).find(Coach.class).size()>0){
+                    Log.e("LitePal.where(\"loginName = ?\",username).find(Coach.class).size()",
+                            "size: "+LitePal.where("coachLoginName = ?",username).find(Coach.class).size() );
+                    localCoachLogin(username,password);
+                }else{
+                    Toast.makeText(LoginActivity.this, "用户名密码错误！", Toast.LENGTH_SHORT).show();
+                }
+               /*if(username.contains("adminLoginName")){
                    localAdminLogin(username,password);
                }else if(username.contains("coachLoginName")){
                    localCoachLogin(username,password);
                }else{
                    Toast.makeText(LoginActivity.this, "用户名密码错误！", Toast.LENGTH_LONG).show();
-               }
+               }*/
             }
         });
 
@@ -121,7 +133,7 @@ public class LoginActivity extends BaseActivity {
     private void localAdminLogin(String username,String password){
         loginFlag=false;
 
-        Toast.makeText(this,"用户名为："+LitePal.find(Admin.class,Integer.parseInt(username.substring(username.length()-1,username.length()))+1).getAdminName(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"用户名为："+LitePal.find(Admin.class,Integer.parseInt(username.substring(username.length()-1,username.length()))+1).getAdminName(),Toast.LENGTH_SHORT).show();
 
 
         Iterator<Admin> adminIterator=InitBean.adminArrayList.iterator();
@@ -163,7 +175,7 @@ public class LoginActivity extends BaseActivity {
     private void localCoachLogin(String username,String password) {
         loginFlag=false;
 //        Toast.makeText(this,"localCoachLogin"+LitePal.findAll(Coach.class).size(),Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"用户名为："+LitePal.find(Coach.class,Integer.parseInt(username.substring(username.length()-1,username.length()))+1).getCoachName()+"总coach数目"+InitBean.coachArrayList.size(),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,"用户名为：" +LitePal.find(Coach.class,Integer.parseInt(username.substring(username.length()-1,username.length()))+1).getCoachName() +"总coach数目"+InitBean.coachArrayList.size(),Toast.LENGTH_SHORT).show();
 
         Iterator<Coach> coachIterator = InitBean.coachArrayList.iterator();
         String tempName;

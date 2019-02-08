@@ -8,8 +8,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.vimems.Adapter.MemberAdapter;
@@ -19,6 +21,8 @@ import com.vimems.Ble.DeviceBluetoothGattServer.DeviceGattServerActivity;
 import com.vimems.R;
 import com.vimems.bean.Coach;
 import com.vimems.bean.Member;
+
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,17 +35,20 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
     private TextView coachName;
     private TextView coachGender;
     private TextView coachBirthday;
-    private  TextView coachID;
+    private TextView coachID;
+    private RadioGroup coachRank;
     private RecyclerView recyclerView;
     private ArrayList<Member> coachMemberList=new ArrayList<>();
 
     private Button scanBleDeviceButton;
+    private Button showBindedDevice;
 
     private Button asGattServer;
     private  Button asGattCentral;
 
     private  String coachLoginname;
     private  int coach_id;
+    private  Coach coach;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +58,34 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
         Intent intent=getIntent();
         coachLoginname=intent.getStringExtra("coachLoginName");
 
+        coach=LitePal.where("coachLoginName=?",coachLoginname+"").find(Coach.class).get(0);
+        coach_id=coach.getCoachID();
+
         coachName= findViewById(R.id.coach_name);
         coachGender=findViewById(R.id.coach_gender);
         coachBirthday=findViewById(R.id.coach_birthday);
         coachID=findViewById(R.id.coach_ID);
+        coachRank=findViewById(R.id.radio_group_coach_rank_display);
+
+        coachName.setText(coach.getCoachName());
+        coachGender.setText(coach.getGender());
+        coachBirthday.setText(coach.getBirthdate().toString());
+
+        coachID.setText(String.format(coach_id+""));
+        Log.e("coach_id", "onCreate: "+coach_id );
+        coachRank.check((coach.getCoachRank().equals("A"))?R.id.coach_rank_display_a:(coach.getCoachRank().equals("B")?R.id.coach_rank_display_b:R.id.coach_rank_display_c));
+
+        Log.e("coach.toString()=", "onCreate: "+coach.toString() );
+
+        showBindedDevice=findViewById(R.id.show_bind_device);
+        showBindedDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                startActivity(intent);
+            }
+        });
+
         scanBleDeviceButton=findViewById(R.id.scan_ble_device);
         scanBleDeviceButton.setOnClickListener(this);
 
@@ -66,16 +97,9 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         recyclerView=findViewById(R.id.coach_member_recycler_view);
         recyclerView.setLayoutManager(linearLayoutManager);
-        MemberAdapter memberAdapter=new MemberAdapter(initCoachMemberList(getCoachID(InitBean.coachArrayList,coachLoginname)));
+        MemberAdapter memberAdapter=new MemberAdapter(initCoachMemberList(coach_id));
         recyclerView.setAdapter(memberAdapter);
 
-
-//        coachUsername.setText(intent.getStringExtra("coachUsername"));
-//        coachGender.setText(intent.getStringExtra("caochGender"));
-//        coachBirthday.setText(intent.getStringExtra("coachBirthday"));
-
-
-        coachID.setText(intent.getStringExtra("coachID"));
     }
 
     private int getCoachID(ArrayList<Coach> coachArrayList,String coachLoginname){

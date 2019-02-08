@@ -1,5 +1,7 @@
 package com.vimems.Adapter;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import com.vimems.R;
 import com.vimems.bean.Member;
+import com.vimems.coach.MemberDetailActivity;
 
 import java.util.ArrayList;
 
@@ -53,6 +56,12 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
                 Member member=memberArrayList.get(position);
+                Intent intent=new Intent(v.getContext(),MemberDetailActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putInt("memberID",member.getMemberID());
+                intent.putExtras(bundle);
+                v.getContext().startActivity(intent);
+
                 Toast.makeText(v.getContext(),"you have clicked view"+member.getMemberName(),Toast.LENGTH_LONG).show();
             }
         });
@@ -61,7 +70,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
                 Member member=memberArrayList.get(position);
-                Toast.makeText(v.getContext(),"教练是"+member.getMemberName(),Toast.LENGTH_LONG).show();
+                Toast.makeText(v.getContext(),"会员名是"+member.getMemberName(),Toast.LENGTH_LONG).show();
             }
         });
         return holder;

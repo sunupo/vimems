@@ -41,6 +41,7 @@ public class AdminMainActivity extends BaseActivity {
     private TextView adminName;
     private TextView loginName;
     private TextView adminGender;
+    private TextView totalCoachNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class AdminMainActivity extends BaseActivity {
         adminName=findViewById(R.id.admin_name);
         loginName=findViewById(R.id.admin_login_name);
         adminGender=findViewById(R.id.admin_gender);
+        totalCoachNum=findViewById(R.id.total_coach_num);
 
         //查询数据库，得到当前登录的admin对象
         //id从1开始，数据库中的adminID从0开始
@@ -65,6 +67,8 @@ public class AdminMainActivity extends BaseActivity {
         adminName.setText(admin.getAdminName());
         loginName.setText(admin.getLoginName());
         adminGender.setText(admin.getGender());
+
+        totalCoachNum.setText(LitePal.where("adminID = ?",admin.getAdminID()+"").find(Coach.class).size()+"");
 
 
 

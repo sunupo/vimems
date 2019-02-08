@@ -59,6 +59,7 @@
         <!--&lt;!&ndash;<activity android:name=".Ble.DeviceBluetoothGattServer.GattServerActivity" />
         <activity android:name=".Ble.AppBluetoothGatt.DeviceControlActivity" />-->
         <activity android:name=".Ble.AppBluetoothGatt.GattPeripheralDetailActivity"/>
+        <activity android:name=".coach.MemberDetailActivity"/>
 
     </application>
 
