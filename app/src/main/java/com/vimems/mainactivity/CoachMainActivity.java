@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.vimems.Adapter.MemberAdapter;
 import com.vimems.Ble.AppBluetoothGatt.GattMainActivity;
+import com.vimems.Ble.BindDeviceActivity;
 import com.vimems.Ble.BleScannerAdvertiserActivity;
 import com.vimems.Ble.DeviceBluetoothGattServer.DeviceGattServerActivity;
 import com.vimems.R;
@@ -81,7 +82,7 @@ public class CoachMainActivity extends BaseActivity implements View.OnClickListe
         showBindedDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent();
+                Intent intent=new Intent(CoachMainActivity.this,BindDeviceActivity.class);
                 startActivity(intent);
             }
         });

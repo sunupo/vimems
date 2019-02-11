@@ -67,16 +67,19 @@
             android:id="@+id/radio_group_coach_rank_display"
             android:orientation="horizontal">
             <RadioButton
+                android:clickable="false"
                 android:text="@string/coach_rank_1"
                 android:id="@+id/coach_rank_display_a"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <RadioButton
+                android:clickable="false"
                 android:text="@string/coach_rank_2"
                 android:id="@+id/coach_rank_display_b"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <RadioButton
+                android:clickable="false"
                 android:text="@string/coach_rank_3"
                 android:id="@+id/coach_rank_display_c"
                 android:layout_width="wrap_content"

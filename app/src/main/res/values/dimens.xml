@@ -3,5 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_login_textview_username">20dp</dimen>
-    <dimen name="activity_login_textview_password">20dp</dimen>
+    <dimen name="activity_login_textview_password"></dimen>
 </resources>

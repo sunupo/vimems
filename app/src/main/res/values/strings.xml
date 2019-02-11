@@ -97,5 +97,28 @@
     <string name="show_bind_device">Binded Device</string>
     <string name="bind_device_detail_connect">重连</string>
     <string name="bind_device_detail_disconnect">断开</string>
+    <string name="single_mode">单人模式</string>
+    <string name="custom_training">自定义训练</string>
+    <string name="video_training">课程训练</string>
+    <string name="vip_training">VIP训练</string>
+    <string name="training_mode">训练模式：</string>
+    <string name="custom_training_options_gain_muscle">增肌</string>
+    <string name="custom_training_options_recovery">康复</string>
+    <string name="custom_training_options_shape">塑形</string>
+    <string name="custom_training_options_lose_fat">减脂</string>
+    <string name="custom_training_options">自定义训练项</string>
+    <string name="custom_training_mode_item_level">等级</string>
+    <string name="custom_training_mode_item_low_frequency">低频</string>
+    <string name="primary">初级</string>
+    <string name="training_item_level_primary">初级</string>
+    <string name="training_item_level_intermediate">中级</string>
+    <string name="training_item_level_senior">高级</string>
+    <string name="custom_training_mode_item_high_frequency">高频</string>
+    <string name="custom_training_mode_item_pulse_width">脉宽</string>
+    <string name="custom_training_mode_item_pulse_peroid">脉冲时间</string>
+    <string name="custom_training_mode_item_intermittent_period">间歇时间</string>
+    <string name="training_item_recovery_level_relax">放松</string>
+    <string name="training_item_recovery_level_soothe">镇痛</string>
+    <string name="training_item_recovery_level_damage">损伤</string>
 
 </resources>

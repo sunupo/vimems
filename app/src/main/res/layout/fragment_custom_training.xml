@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp">
+        <TextView
+            android:text="@string/custom_training_options"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            />
+        <RadioGroup
+            android:id="@+id/custom_training_options_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@id/custom_training_options_lose_fat">
+            <RadioButton
+                android:id="@+id/custom_training_options_gain_muscle"
+                android:text="@string/custom_training_options_gain_muscle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+            <RadioButton
+                android:id="@+id/custom_training_options_lose_fat"
+                android:text="@string/custom_training_options_lose_fat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+            <RadioButton
+                android:id="@+id/custom_training_options_shape"
+                android:text="@string/custom_training_options_shape"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+            <RadioButton
+                android:id="@+id/custom_training_options_recovery"
+                android:text="@string/custom_training_options_recovery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </RadioGroup>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+    <FrameLayout
+        android:id="@+id/custom_training_options_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+</android.support.v7.widget.LinearLayoutCompat>

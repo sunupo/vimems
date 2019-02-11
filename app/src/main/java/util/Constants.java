@@ -13,5 +13,6 @@ public class Constants {
     public  static  boolean connectable=true;
     public  static  int timeoutMillis=0;
 
+    public static final String[] TRAINING_MODE = {"自定义训练","课程训练","VIP训练"};
 
 }
