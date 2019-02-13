@@ -35,6 +35,7 @@
         <mapping class="com.vimems.bean.Admin"/>
         <mapping class="com.vimems.bean.Coach"/>
         <mapping class="com.vimems.bean.Member"/>
+        <mapping class="com.vimems.bean.CustomMusclePara"/>
     </list>
 
     <!--

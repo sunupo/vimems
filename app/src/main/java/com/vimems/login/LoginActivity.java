@@ -103,7 +103,6 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-
                 username=editTextUsername.getText().toString();
                 password=editTextPassword.getText().toString();
                 //sendRequestWithOkHttp(address,username,password);

@@ -58,7 +58,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
                 Member member=memberArrayList.get(position);
                 Intent intent=new Intent(v.getContext(),MemberDetailActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putInt("memberID",member.getMemberID());
+                bundle.putInt("MEMBER_ID",member.getMemberID());
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
 

@@ -108,17 +108,37 @@
     <string name="custom_training_options_lose_fat">减脂</string>
     <string name="custom_training_options">自定义训练项</string>
     <string name="custom_training_mode_item_level">等级</string>
-    <string name="custom_training_mode_item_low_frequency">低频</string>
+    <string name="custom_training_mode_item_low_frequency">低频(HZ)</string>
     <string name="primary">初级</string>
     <string name="training_item_level_primary">初级</string>
     <string name="training_item_level_intermediate">中级</string>
     <string name="training_item_level_senior">高级</string>
-    <string name="custom_training_mode_item_high_frequency">高频</string>
-    <string name="custom_training_mode_item_pulse_width">脉宽</string>
-    <string name="custom_training_mode_item_pulse_peroid">脉冲时间</string>
-    <string name="custom_training_mode_item_intermittent_period">间歇时间</string>
+    <string name="custom_training_mode_item_high_frequency">高频(HZ)</string>
+    <string name="custom_training_mode_item_pulse_width">脉宽(%)</string>
+    <string name="custom_training_mode_item_pulse_peroid">脉冲时间(秒)</string>
+    <string name="custom_training_mode_item_intermittent_period">间歇时间(秒)</string>
     <string name="training_item_recovery_level_relax">放松</string>
     <string name="training_item_recovery_level_soothe">镇痛</string>
     <string name="training_item_recovery_level_damage">损伤</string>
+    <string name="training_muscle_item">肌肉位置：</string>
+    <string name="muscle_xiongdaji">胸大肌</string>
+    <string name="muscle_fuji">腹肌</string>
+    <string name="front_muscle">正面肌肉</string>
+    <string name="back_muscle">背部肌肉</string>
+    <string name="muscle_xiefangji">斜方肌</string>
+    <string name="muscle_beikuoji">背阔肌</string>
+    <string name="other_muscle">其它</string>
+    <string name="muscle_a">肌肉1</string>
+    <string name="muscle_b">肌肉2</string>
+    <string name="muscle_c">肌肉3</string>
+    <string name="muscle_d">肌肉4</string>
+    <string name="muscle_e">肌肉5</string>
+    <string name="muscle_f">肌肉6</string>
+    <string name="muscle_item_unchecked_all">清空</string>
+    <string name="muscle_item_checked_all">全选</string>
+    <string name="save_muscle_para">保存</string>
+    <string name="single_mode_training_startup">开始训练</string>
+    <string name="training_muscle_intensity">强度(%)</string>
+
 
 </resources>

@@ -9,6 +9,7 @@ import com.vimems.AdapterItem.MemberItem;
 import com.vimems.R;
 import com.vimems.bean.Admin;
 import com.vimems.bean.Coach;
+import com.vimems.bean.CustomMusclePara;
 import com.vimems.bean.Member;
 
 import org.litepal.LitePal;
@@ -148,6 +149,13 @@ public class InitBean {
             members[i].save();
         }
         Log.i(TAG, "initMember: ");
+    }
+    public static void initCustomMusclePara(){
+        CustomMusclePara[] customMusclePara=new CustomMusclePara[600];
+        for (int i = 0; i < customMusclePara.length; i++) {
+            customMusclePara[i]=new CustomMusclePara();
+
+        }
     }
 
     public static int getAdminCoachNum(int adminID,ArrayList<Coach> coachArrayList){

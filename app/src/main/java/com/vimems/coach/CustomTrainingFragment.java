@@ -15,14 +15,17 @@ import com.vimems.R;
 
 public class CustomTrainingFragment extends Fragment {
     public static final String ARG_PAGE="ARG_PAGE";
+    public static final String TRAINING_ITEM="TRAINING_ITEM";
+    public static final String MEMBER_ID="MEMBER_ID";
     private int mPage;
+    private int memberID;
+    public static final int GAIN_MUSCLE=1;
+    public static final int LOSE_FAT=2;
+    public static final int SHAPE=3;
+    public static final int RECOVERY=4;
+
 
     private RadioGroup radioGroup;
-    private CustomTrainingGainMuscleFragment customTrainingGainMuscleFragment;
-    private CustomTrainingLoseFatFragment customTrainingLoseFatFragment;
-    private CustomTrainingShapeFragment customTrainingShapeFragment;
-    private  CustomTrainingRecoveryFragment customTrainingRecoveryFragment;
-
     private CustomTrainingItemFragment customTrainingItemFragment;
 
     //使用newInstance的方式，或者在CustomTrainingFragmentPageAdapter中添加一个列表
@@ -45,16 +48,10 @@ public class CustomTrainingFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage=getArguments().getInt(ARG_PAGE);
-
-
-        customTrainingGainMuscleFragment=new CustomTrainingGainMuscleFragment();
-        customTrainingLoseFatFragment=new CustomTrainingLoseFatFragment();
-        customTrainingShapeFragment=new CustomTrainingShapeFragment();
-        customTrainingRecoveryFragment=new CustomTrainingRecoveryFragment();
-
-
-
+        Bundle bundle;
+        bundle=getArguments();
+        mPage=bundle.getInt(ARG_PAGE);
+        memberID=bundle.getInt(MEMBER_ID);
 
     }
 
@@ -74,44 +71,46 @@ public class CustomTrainingFragment extends Fragment {
         });
         return view;
     }
-    private void replaceFragment(int checkedId){
 
-        FragmentManager fragmentManager=getChildFragmentManager();
-        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        switch (checkedId){
-            case R.id.custom_training_options_gain_muscle:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingGainMuscleFragment);
-                break;
-            case R.id.custom_training_options_lose_fat:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingLoseFatFragment);
-                break;
-            case R.id.custom_training_options_shape:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingShapeFragment);
-                break;
-            case R.id.custom_training_options_recovery:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingRecoveryFragment);
-                break;
-            default:
-                break;
-        }
-        fragmentTransaction.commit();
-    }
     private void replaceFragmentItem(int checkedId){
 
         FragmentManager fragmentManager=getChildFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        Bundle bundle1,bundle2,bundle3,bundle4;
+        CustomTrainingItemFragment customTrainingItemFragment1,customTrainingItemFragment2,customTrainingItemFragment3,customTrainingItemFragment4;
         switch (checkedId){
             case R.id.custom_training_options_gain_muscle:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,CustomTrainingItemFragment.newInstance(mPage));
-                break;
+                customTrainingItemFragment1=new CustomTrainingItemFragment();
+                bundle1=new Bundle();
+                bundle1.putInt(ARG_PAGE,mPage);
+                bundle1.putInt(TRAINING_ITEM,GAIN_MUSCLE);
+                bundle1.putInt(MEMBER_ID,memberID);
+                customTrainingItemFragment1.setArguments(bundle1);
+                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingItemFragment1);                break;
             case R.id.custom_training_options_lose_fat:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,CustomTrainingItemFragment.newInstance(mPage));
-                break;
+                customTrainingItemFragment2=new CustomTrainingItemFragment();
+                bundle2=new Bundle();
+                bundle2.putInt(ARG_PAGE,mPage);
+                bundle2.putInt(TRAINING_ITEM,LOSE_FAT);
+                bundle2.putInt(MEMBER_ID,memberID);
+                customTrainingItemFragment2.setArguments(bundle2);
+                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingItemFragment2);                 break;
             case R.id.custom_training_options_shape:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,CustomTrainingItemFragment.newInstance(mPage));
-                break;
+                customTrainingItemFragment3=new CustomTrainingItemFragment();
+                bundle3=new Bundle();
+                bundle3.putInt(ARG_PAGE,mPage);
+                bundle3.putInt(TRAINING_ITEM,SHAPE);
+                bundle3.putInt(MEMBER_ID,memberID);
+                customTrainingItemFragment3.setArguments(bundle3);
+                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingItemFragment3);                 break;
             case R.id.custom_training_options_recovery:
-                fragmentTransaction.replace(R.id.custom_training_options_fragment,CustomTrainingItemFragment.newInstance(mPage));
+                customTrainingItemFragment4=new CustomTrainingItemFragment();
+                bundle4=new Bundle();
+                bundle4.putInt(ARG_PAGE,mPage);
+                bundle4.putInt(TRAINING_ITEM,RECOVERY);
+                bundle4.putInt(MEMBER_ID,memberID);
+                customTrainingItemFragment4.setArguments(bundle4);
+                fragmentTransaction.replace(R.id.custom_training_options_fragment,customTrainingItemFragment4);
                 break;
             default:
                 break;

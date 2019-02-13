@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <android.support.v7.widget.AppCompatTextView
-            android:text="itemName"
+            android:text="参数设置"
             android:id="@+id/custom_training_options_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,17 +35,19 @@
             <android.support.v7.widget.AppCompatTextView
                 android:text="@string/custom_training_mode_item_level"
                 android:textSize="20sp"
-                android:layout_width="100dp"
+                android:layout_width="125dp"
                 android:layout_height="match_parent" />
             <RadioGroup
+                android:id="@+id/training_item_level_radio_group"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
                 <RadioButton
                     android:id="@+id/training_item_level_a"
-                    android:text="@string/training_item_level_primary"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:text="@string/training_item_level_primary" />
                 <RadioButton
                     android:id="@+id/training_item_level_b"
                     android:text="@string/training_item_level_intermediate"
@@ -78,20 +80,23 @@
             <android.support.v7.widget.AppCompatTextView
                 android:text="@string/custom_training_mode_item_low_frequency"
                 android:textSize="20sp"
-                android:layout_width="100dp"
+                android:layout_width="125dp"
                 android:layout_height="match_parent" />
             <TextView
-                android:text="0-100"
+                android:id="@+id/low_frequency_textview"
+                android:text="50"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="8"/>
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/low_frequency_textview_decrease"
                 android:text="—"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/low_frequency_textview_increase"
                 android:text="+"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
@@ -116,20 +121,23 @@
             <android.support.v7.widget.AppCompatTextView
                 android:text="@string/custom_training_mode_item_high_frequency"
                 android:textSize="20sp"
-                android:layout_width="100dp"
+                android:layout_width="125dp"
                 android:layout_height="match_parent" />
             <TextView
-                android:text="2000-3800MHZ"
+                android:id="@+id/high_frequency_textview"
+                android:text="5000"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="8"/>
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/high_frequency_textview_decrease"
                 android:text="—"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/high_frequency_textview_increase"
                 android:text="+"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
@@ -153,20 +161,24 @@
             <android.support.v7.widget.AppCompatTextView
                 android:text="@string/custom_training_mode_item_pulse_width"
                 android:textSize="20sp"
-                android:layout_width="100dp"
+                android:layout_width="125dp"
                 android:layout_height="match_parent" />
+
             <TextView
-                android:text="0-100%"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:gravity="center_horizontal|center_vertical"
+                android:id="@+id/pulse_width_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="8"/>
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="12" />
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/pulse_width_textview_decrease"
                 android:text="—"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/pulse_width_textview_increase"
                 android:text="+"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
@@ -189,20 +201,24 @@
             <android.support.v7.widget.AppCompatTextView
                 android:text="@string/custom_training_mode_item_pulse_peroid"
                 android:textSize="20sp"
-                android:layout_width="100dp"
+                android:layout_width="125dp"
                 android:layout_height="match_parent" />
+
             <TextView
-                android:text="1-30秒"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:gravity="center_horizontal|center_vertical"
+                android:id="@+id/pulse_period_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="8"/>
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="12" />
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/pulse_period_textview_decrease"
                 android:text="—"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/pulse_period_textview_increase"
                 android:text="+"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
@@ -225,20 +241,59 @@
             <android.support.v7.widget.AppCompatTextView
                 android:text="@string/custom_training_mode_item_intermittent_period"
                 android:textSize="20sp"
-                android:layout_width="100dp"
+                android:layout_width="125dp"
                 android:layout_height="match_parent" />
+
             <TextView
-                android:text="0-30秒"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:gravity="center_horizontal|center_vertical"
+                android:id="@+id/intermittent_period_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="8"/>
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="12" />
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/intermittent_period_textview_decrease"
                 android:text="—"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/intermittent_period_textview_increase"
+                android:text="+"
+                android:layout_width="38dp"
+                android:layout_height="wrap_content"/>
+        </android.support.v7.widget.LinearLayoutCompat>
+        <!--分割线-->
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorAccent"/>
+        <android.support.v7.widget.LinearLayoutCompat
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatTextView
+                android:text="@string/training_muscle_intensity"
+                android:textSize="20sp"
+                android:layout_width="125dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/training_muscle_intensity_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="50" />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/intensity_textview_decrease"
+                android:text="—"
+                android:layout_width="38dp"
+                android:layout_height="wrap_content"/>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/intensity_textview_increase"
                 android:text="+"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"/>
@@ -249,4 +304,172 @@
             android:layout_height="2dp"
             android:background="@color/colorAccent"/>
     </LinearLayout>
+    <android.support.v7.widget.AppCompatTextView
+        android:text="分割"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:alpha="0"/>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatTextView
+                android:text="@string/training_muscle_item"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textSize="20sp"/>
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatTextView
+                android:text="@string/front_muscle"
+                android:textSize="20sp"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                />
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/muscle_xiongdaji"
+                android:text="@string/muscle_xiongdaji"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/muscle_fuji"
+                android:text="@string/muscle_fuji"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.LinearLayoutCompat>
+        <android.support.v7.widget.LinearLayoutCompat
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:text="@string/back_muscle"
+                android:textSize="20sp" />
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/muscle_xiefangji"
+                android:text="@string/muscle_xiefangji"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/muscle_beikuoji"
+                android:text="@string/muscle_beikuoji"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingRight="5dp">
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|left"
+                    android:text="@string/other_muscle"
+                    android:textSize="20sp" />
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/muscle_item_checked_all"
+                    android:id="@+id/muscle_item_checked_all"/>
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/muscle_a"
+                        android:text="@string/muscle_a"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/muscle_b"
+                        android:text="@string/muscle_b"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/muscle_c"
+                        android:text="@string/muscle_c"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </android.support.v7.widget.LinearLayoutCompat>
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/muscle_d"
+                        android:text="@string/muscle_d"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/muscle_e"
+                        android:text="@string/muscle_e"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/muscle_f"
+                        android:text="@string/muscle_f"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </android.support.v7.widget.LinearLayoutCompat>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/save_muscle_para"
+            android:text="@string/save_muscle_para"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/single_mode_training_startup"
+            android:text="@string/single_mode_training_startup"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.LinearLayoutCompat>
+
 </android.support.v7.widget.LinearLayoutCompat>
