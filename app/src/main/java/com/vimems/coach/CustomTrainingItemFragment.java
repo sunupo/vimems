@@ -1,24 +1,35 @@
 package com.vimems.coach;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vimems.Ble.AppBluetoothGatt.DeviceControlActivity;
+import com.vimems.Ble.AppBluetoothGatt.GattPeripheralDetailActivity;
 import com.vimems.R;
 import com.vimems.bean.CustomMusclePara;
+import com.vimems.mainactivity.SingleModeTrainingMainActivity;
+
+import org.litepal.LitePal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,12 +44,16 @@ import static com.vimems.coach.CustomTrainingFragment.ARG_PAGE;
 import static com.vimems.coach.CustomTrainingFragment.MEMBER_ID;
 import static com.vimems.coach.CustomTrainingFragment.RECOVERY;
 import static com.vimems.coach.CustomTrainingFragment.TRAINING_ITEM;
+import static com.vimems.coach.MemberDetailActivity.deviceDefaultCustomNameMap;
+import static com.vimems.coach.MemberDetailActivity.mBluetoothAdapter;
+import static com.vimems.coach.MemberDetailActivity.memberIDDeviceMap;
 
 /*
 * 用来替代4个fragment的
 * */
 public class CustomTrainingItemFragment extends Fragment {
 
+    public static final String CUSTOM_MUSCLE_PARA_LIST ="CUSTOM_MUSCLE_PARA_LIST" ;
     private int page;//page=trainingModeCode，就是自定义训练1、vip训练3
     private int trainingModuleCode;
     private int memberID;
@@ -60,15 +75,23 @@ public class CustomTrainingItemFragment extends Fragment {
     private CheckBox shiftMuscleItemCheckedStateAll;
     private CheckBox xiongdaji,fuji,xiefangji,beikuoji,
             musclea,muscleb,musclec,muscled,musclee,musclef;
-    private Button trainingStartup;
+    private Button savePara,trainingStartup;
 
     private CustomMusclePara customMusclePara;
 
     private List<CheckBox> checkBoxList;
     private Set<CheckBox> checkedBoxSet=new HashSet<>();//状态为checked的checkbox列表
 
-    private Map<CheckBox,Integer> checkBoxIntegerMap;//每一个checkbox对应一个整数id
-    private Map<Integer,Integer> radioButtonIdIntegerMap;//每一个radiobutton对应一个整数id
+    public static Map<CheckBox,Integer> checkBoxIntegerMap;//每一个checkbox对应一个整数id
+    public static Map<Integer,Integer> radioButtonIdIntegerMap;//每一个radiobutton对应一个整数id
+
+    public static EditText customDeviceName;
+    public static TextView deviceAddress;
+    public static RadioGroup deviceState;
+    private Button alterDeviceName;
+
+    private SharedPreferences sharedPreferences;
+    private  boolean flag;
 
     public static CustomTrainingItemFragment newInstance(int page){
 
@@ -83,7 +106,7 @@ public class CustomTrainingItemFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle=getArguments();
-        page=bundle.getInt(ARG_PAGE);
+        page=bundle.getInt(ARG_PAGE);//page对应trainingModeCode，1自定义训练，3VIP训练
         trainingModuleCode=bundle.getInt(TRAINING_ITEM);
         memberID=bundle.getInt(MEMBER_ID);
     }
@@ -95,11 +118,18 @@ public class CustomTrainingItemFragment extends Fragment {
 
         allFindViewById(view);
         initCheckBoxList();
-        setCheckBoxListener();
+        setCheckBoxButtonListener();
         setDecIncButtonOnClickListener();
         initCheckBoxIntegerMap();
         initRadioButtonIdIntegerMap();
         setLFHFVisibility();
+        //判断是否保存过自定义参数
+        // 是：则显示开始训练按钮
+        sharedPreferences=getContext().getSharedPreferences("hasPara",Context.MODE_PRIVATE);
+        flag=sharedPreferences.getBoolean(memberID+page+trainingModuleCode+"flag",false);
+        if (flag){
+            trainingStartup.setVisibility(View.VISIBLE);
+        }
         return view;
     }
     /*改变康复模式下等级radiobutton的显示文字和如果是在vip训练模式下，显示低频和高频参数设置*/
@@ -119,6 +149,12 @@ public class CustomTrainingItemFragment extends Fragment {
         }
     }
     private void allFindViewById(View view){
+
+        customDeviceName=view.findViewById(R.id.bind_member_custom_device_name);
+        deviceAddress=view.findViewById(R.id.bind_member_default_device_address);
+        deviceState=view.findViewById(R.id.bind_member_device_connect_state);
+        alterDeviceName=view.findViewById(R.id.alter_bind_member_custom_device_name);
+
         itemName=view.findViewById(R.id.custom_training_options_item_name);
         lowFrequencyLinearLayout=view.findViewById(R.id.low_frequency);
         highFrequencyLinearLayout=view.findViewById(R.id.high_frequency);
@@ -145,6 +181,7 @@ public class CustomTrainingItemFragment extends Fragment {
         muscled=view.findViewById(R.id.muscle_d);
         musclee=view.findViewById(R.id.muscle_e);
         musclef=view.findViewById(R.id.muscle_f);
+        savePara=view.findViewById(R.id.save_muscle_para);
         trainingStartup=view.findViewById(R.id.single_mode_training_startup);
 
         //decrease increase 按钮绑定
@@ -178,7 +215,35 @@ public class CustomTrainingItemFragment extends Fragment {
         checkBoxList.add(musclee);
         checkBoxList.add(musclef);
     }
-    private void setCheckBoxListener(){
+
+    private void setCheckBoxButtonListener(){
+        customDeviceName.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
+        alterDeviceName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BluetoothDevice bluetoothDevice= memberIDDeviceMap.get(memberID);
+                if(alterDeviceName.getText().equals("重命名")){
+                    if(bluetoothDevice!=null){
+                        customDeviceName.setEnabled(true);
+                        alterDeviceName.setText("确认");
+                    }
+                    else{
+                        Log.e("bluetoothDevice==null", "bluetoothDevice==null" );
+                    }
+                }else if((alterDeviceName.getText().equals("确认"))){
+                    deviceDefaultCustomNameMap.put(bluetoothDevice,customDeviceName.getText().toString());
+                    Log.d("deviceDefaultCustomNameMap.put(),重命名",
+                            "<"+bluetoothDevice.getName()+","+customDeviceName.getText().toString()+">");
+                    customDeviceName.setEnabled(false);
+                    alterDeviceName.setText("重命名");
+                }
+            }
+        });
         shiftMuscleItemCheckedStateAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -203,11 +268,84 @@ public class CustomTrainingItemFragment extends Fragment {
         setOtherMuscleCheckedChangListener(muscled);
         setOtherMuscleCheckedChangListener(musclee);
         setOtherMuscleCheckedChangListener(musclef);
+        savePara.setOnClickListener(new View.OnClickListener() {//把每一个肌肉的训练参数，保存到数据库中
+            @Override
+            public void onClick(View v) {
+                Iterator<CheckBox> checkBoxIterator=checkedBoxSet.iterator();
+                Boolean saveState=false;
+                //<p>Returns the identifier of the selected radio button in this group.
+                //     * Upon empty selection, the returned value is -1.</p>
+                if(!checkBoxIterator.hasNext()){
+                    Toast.makeText(v.getContext(),"请选择至少一处肌肉",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(trainingItemLevelRadioGroup.getCheckedRadioButtonId()==-1){
+                    Toast.makeText(v.getContext(),"请选择等级",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                while(checkBoxIterator.hasNext()){
+                    int tempMuscleID;
+                    tempMuscleID=checkBoxIntegerMap.get(checkBoxIterator.next());
+
+                    customMusclePara=new CustomMusclePara();
+                    customMusclePara.setMuscleID(tempMuscleID);
+                    customMusclePara.setMemberID(memberID);
+                    customMusclePara.setTrainingModeCode(page);
+                    customMusclePara.setTrainingModuleCode(trainingModuleCode);
+                    customMusclePara.setTrainingModuleLevel(radioButtonIdIntegerMap.get(trainingItemLevelRadioGroup.getCheckedRadioButtonId()));
+                    customMusclePara.setLowFrequency(Integer.parseInt(lowFrequency.getText().toString()));
+                    customMusclePara.setHighFrequency(Integer.parseInt(highFrequency.getText().toString()));
+                    customMusclePara.setPulseWidth(Integer.parseInt(pulseWidth.getText().toString()));
+                    customMusclePara.setPulsePeriod(Integer.parseInt(pulsePeriod.getText().toString()));
+                    customMusclePara.setIntermittentPeriod(Integer.parseInt(intermittent.getText().toString()));
+                    customMusclePara.setIntensity(Integer.parseInt(intensity.getText().toString()));
+                    if(LitePal.where("muscleID = ? and memberID = ? and trainingModeCode = ? and trainingModuleCode = ?",
+                            tempMuscleID+"",memberID+"",page+"",trainingModuleCode+"").find(CustomMusclePara.class).size()>0){
+                        CustomMusclePara temp;
+                        //根据这四个属性（四个主键）查询出来的最多只有一条数据
+                        temp=LitePal.where("muscleID = ? and memberID = ? and trainingModeCode = ? and trainingModuleCode = ?",
+                                tempMuscleID+"",memberID+"",page+"",trainingModuleCode+"")
+                                .find(CustomMusclePara.class).get(0);
+                        temp.setTrainingModuleLevel(radioButtonIdIntegerMap.get(trainingItemLevelRadioGroup.getCheckedRadioButtonId()));
+                        temp.setLowFrequency(Integer.parseInt(lowFrequency.getText().toString()));
+                        temp.setHighFrequency(Integer.parseInt(highFrequency.getText().toString()));
+                        temp.setPulseWidth(Integer.parseInt(pulseWidth.getText().toString()));
+                        temp.setPulsePeriod(Integer.parseInt(pulsePeriod.getText().toString()));
+                        temp.setIntermittentPeriod(Integer.parseInt(intermittent.getText().toString()));
+                        temp.setIntensity(Integer.parseInt(intensity.getText().toString()));
+
+                        saveState=temp.save();
+                        Log.d("查询到数据，更新数据 --> temp.save()",
+                                "muscleID = "+tempMuscleID+"; memberID = "+memberID+ ";trainingModeCode ="+page+"; trainingModuleCode = "+trainingItemLevelRadioGroup+"更新成功？ "
+                                        +saveState );
+                    }else {
+                        saveState=customMusclePara.save();
+                        Toast.makeText(v.getContext(), "保存成功？" , Toast.LENGTH_SHORT);
+                        Log.d("没有查询到数据，插入数据  --> customMusclePara.save()",
+                                "muscleID = "+tempMuscleID+"; memberID = "+memberID+ ";trainingModeCode ="+page+"; trainingModuleCode = "+trainingItemLevelRadioGroup+"保存成功？"
+                                        + saveState);
+                    }
+                }
+                Toast.makeText(v.getContext(),"保存成功?"+saveState,Toast.LENGTH_SHORT).show();
+
+                /**
+                 * 判断以前是否保存过参数,决定是否显示开始训练按钮
+                 */
+                if(!sharedPreferences.getBoolean(memberID+page+trainingModuleCode+"flag",false)){
+                    SharedPreferences.Editor editor=v.getContext().getSharedPreferences("hasPara",Context.MODE_PRIVATE).edit();
+                    editor.putBoolean(memberID+page+trainingModuleCode+"flag",true);
+                    editor.commit();
+                    trainingStartup.setVisibility(View.VISIBLE);
+                }else{
+                    trainingStartup.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
         trainingStartup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trainingItemLevelRadioGroup.getCheckedRadioButtonId();
                 List<CustomMusclePara> customMuscleParaList=new ArrayList<>();
+                initCheckBoxSet();
                 Iterator<CheckBox> checkBoxIterator=checkedBoxSet.iterator();
                 while(checkBoxIterator.hasNext()){
 
@@ -222,12 +360,17 @@ public class CustomTrainingItemFragment extends Fragment {
                     customMusclePara.setPulseWidth(Integer.parseInt(pulseWidth.getText().toString()));
                     customMusclePara.setPulsePeriod(Integer.parseInt(pulsePeriod.getText().toString()));
                     customMusclePara.setIntermittentPeriod(Integer.parseInt(intermittent.getText().toString()));
+                    customMusclePara.setIntensity(Integer.parseInt(intensity.getText().toString()));
 
                     customMuscleParaList.add(customMusclePara);
                 }
-                Intent intent=new Intent();
+                Intent intent=new Intent(v.getContext(),SingleModeTrainingMainActivity.class);
+                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, customDeviceName.getText().toString());
+                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, deviceAddress.getText().toString());
+
                 Bundle bundle=new Bundle();
-                bundle.putSerializable("CUSTOM_MUSCLE_PARA_LIST",(Serializable)customMuscleParaList);
+                bundle.putSerializable(CUSTOM_MUSCLE_PARA_LIST,(Serializable)customMuscleParaList);
+                //bundle.putSerializable("xiongdaji",customMuscleParaList.get(0));
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -248,14 +391,14 @@ public class CustomTrainingItemFragment extends Fragment {
                         }
                         beikuoji.setChecked(false);
                         xiefangji.setChecked(false);
-                        //checkBox.setChexked(false);应该是能触发监听事件onCheckedChanged
-                        //这儿判断一下，保险起见
-                        if(checkedBoxSet.contains(beikuoji)){
-                            checkedBoxSet.remove(beikuoji);
-                        }
-                        if(checkedBoxSet.contains(xiefangji)){
-                            checkedBoxSet.remove(xiefangji);
-                        }
+//                        checkBox.setChexked(false);应该是能触发监听事件onCheckedChanged
+//                        这儿判断一下，保险起见
+//                        if(checkedBoxSet.contains(beikuoji)){
+//                            checkedBoxSet.remove(beikuoji);
+//                        }
+//                        if(checkedBoxSet.contains(xiefangji)){
+//                            checkedBoxSet.remove(xiefangji);
+//                        }
                     }
                 }
                 if (buttonView.equals(xiefangji)||buttonView.equals(beikuoji)){
@@ -265,14 +408,14 @@ public class CustomTrainingItemFragment extends Fragment {
                         }
                         xiongdaji.setChecked(false);
                         fuji.setChecked(false);
-                        //checkBox.setChexked(false);应该是能触发监听事件onCheckedChanged
-                        //这儿判断一下，保险起见
-                        if(checkedBoxSet.contains(xiongdaji)){
-                            checkedBoxSet.remove(xiongdaji);
-                        }
-                        if(checkedBoxSet.contains(fuji)){
-                            checkedBoxSet.remove(fuji);
-                        }
+//                        checkBox.setChexked(false);应该是能触发监听事件onCheckedChanged
+//                        这儿判断一下，保险起见
+//                        if(checkedBoxSet.contains(xiongdaji)){
+//                            checkedBoxSet.remove(xiongdaji);
+//                        }
+//                        if(checkedBoxSet.contains(fuji)){
+//                            checkedBoxSet.remove(fuji);
+//                        }
                     }
                 }
             }
@@ -282,13 +425,17 @@ public class CustomTrainingItemFragment extends Fragment {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    if(!checkedBoxSet.contains(buttonView)){
-                        checkedBoxSet.add((CheckBox)buttonView);
-                    }
-                }else if(checkedBoxSet.contains(buttonView)){
-                    checkedBoxSet.remove(buttonView);
-                }
+//                if(isChecked){
+//                    if(!checkedBoxSet.contains(buttonView)){
+//                        checkedBoxSet.add((CheckBox)buttonView);
+//                    }
+//                }
+//                if(!isChecked){
+//                    checkedBoxSet.remove(buttonView);
+//                }
+//                else if(!isChecked && checkedBoxSet.contains(buttonView)){
+//                    checkedBoxSet.remove(buttonView);
+//                }
             }
         });
     }
@@ -368,13 +515,46 @@ public class CustomTrainingItemFragment extends Fragment {
         checkBoxIntegerMap.put(muscled,8);
         checkBoxIntegerMap.put(musclee,9);
         checkBoxIntegerMap.put(musclef,10);
-
     }
     private void initRadioButtonIdIntegerMap(){
         radioButtonIdIntegerMap=new HashMap<>();
         radioButtonIdIntegerMap.put(R.id.training_item_level_a,1);
         radioButtonIdIntegerMap.put(R.id.training_item_level_b,2);
         radioButtonIdIntegerMap.put(R.id.training_item_level_c,3);
+
+    }
+    private void initCheckBoxSet(){
+        checkedBoxSet.clear();
+        if(xiongdaji.isChecked()){
+            checkedBoxSet.add(xiongdaji);
+        }
+        if(fuji.isChecked()){
+            checkedBoxSet.add(fuji);
+        }
+        if(xiefangji.isChecked()){
+            checkedBoxSet.add(xiefangji);
+        }
+        if(beikuoji.isChecked()){
+            checkedBoxSet.add(beikuoji);
+        }
+        if(musclea.isChecked()){
+            checkedBoxSet.add(musclea);
+        }
+        if(muscleb.isChecked()){
+            checkedBoxSet.add(muscleb);
+        }
+        if(musclec.isChecked()){
+            checkedBoxSet.add(musclec);
+        }
+        if(muscled.isChecked()){
+            checkedBoxSet.add(muscled);
+        }
+        if(musclee.isChecked()){
+            checkedBoxSet.add(musclee);
+        }
+        if(musclef.isChecked()){
+            checkedBoxSet.add(musclef);
+        }
 
     }
 }

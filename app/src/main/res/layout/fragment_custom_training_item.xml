@@ -12,6 +12,113 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <android.support.v7.widget.AppCompatTextView
+            android:text="绑定设备"
+            android:id="@+id/bind_member_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold|italic"
+            android:textSize="38sp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <android.support.v7.widget.AppCompatTextView
+                        android:text="设备名称:"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatEditText
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="custom_device_name"
+                        android:enabled="false"
+                        android:id="@+id/bind_member_custom_device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatTextView
+                        android:visibility="gone"
+                        android:id="@+id/bind_member_device_default_device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatButton
+                        android:text="@string/alter_bind_member_custom_device_name"
+                        android:id="@+id/alter_bind_member_custom_device_name"
+                        android:gravity="top"
+                        android:textSize="8sp"
+                        android:layout_gravity="right"
+                        android:layout_width="60dp"
+                        android:layout_height="30dp" />
+                </android.support.v7.widget.LinearLayoutCompat>
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <android.support.v7.widget.AppCompatTextView
+                        android:text="设备地址:"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/bind_member_default_device_address"
+                        android:layout_width="400px"
+                        android:layout_height="wrap_content" />
+                </android.support.v7.widget.LinearLayoutCompat>
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <android.support.v7.widget.AppCompatTextView
+                        android:text="连接状态"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <RadioGroup
+                        android:id="@+id/bind_member_device_connect_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <android.support.v7.widget.AppCompatRadioButton
+                            android:id="@+id/device_state_connected"
+                            android:text="已连接"
+                            android:clickable="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatRadioButton
+                            android:id="@+id/device_state_disconnected"
+                            android:checked="true"
+                            android:text="未连接"
+                            android:clickable="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </RadioGroup>
+                </android.support.v7.widget.LinearLayoutCompat>
+            </android.support.v7.widget.LinearLayoutCompat>
+        </LinearLayout>
+        <!--分割线-->
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorAccent"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <android.support.v7.widget.AppCompatTextView
             android:text="参数设置"
             android:id="@+id/custom_training_options_item_name"
             android:layout_width="wrap_content"
@@ -44,6 +151,7 @@
                 android:orientation="horizontal">
 
                 <RadioButton
+                    android:checked="true"
                     android:id="@+id/training_item_level_a"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -336,6 +444,7 @@
                 android:layout_height="match_parent"
                 />
             <android.support.v7.widget.AppCompatCheckBox
+                android:checked="true"
                 android:id="@+id/muscle_xiongdaji"
                 android:text="@string/muscle_xiongdaji"
                 android:textSize="20sp"
@@ -465,6 +574,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content" />
         <android.support.v7.widget.AppCompatButton
+            android:visibility="gone"
             android:id="@+id/single_mode_training_startup"
             android:text="@string/single_mode_training_startup"
             android:layout_width="0dp"

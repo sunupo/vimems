@@ -5,14 +5,100 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.design.circularreveal.CircularRevealGridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:rowCount="4"
+            android:columnCount="3"
+            android:orientation="horizontal"            >
+            <TextView
+                android:text="ONE"
+                android:id="@+id/muscle1_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="TWO"
+                android:id="@+id/muscle2_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="three"
+                android:id="@+id/muscle3_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="four"
+                android:id="@+id/muscle4_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="five"
+                android:id="@+id/muscle5_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
 
-    <TextView
-        android:id="@+id/muscle1_para_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="56dp"
-        tools:text="01/01/1970\n12:00"></TextView>
+            <TextView
+                android:text="six"
+                android:id="@+id/muscle6_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="seven"
+                android:id="@+id/muscle7_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="eight"
+                android:id="@+id/muscle8_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="nine"
+                android:id="@+id/muscle9_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+            <TextView
+                android:text="ten"
+                android:id="@+id/muscle10_para_textview"
+                android:layout_width="400px"
+                android:layout_height="320px"
+                android:gravity="left"
+                android:layout_rowWeight="1"
+                android:textSize="8sp"></TextView>
+        </android.support.design.circularreveal.CircularRevealGridLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
 
 </LinearLayout>

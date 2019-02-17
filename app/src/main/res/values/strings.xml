@@ -137,8 +137,13 @@
     <string name="muscle_item_unchecked_all">清空</string>
     <string name="muscle_item_checked_all">全选</string>
     <string name="save_muscle_para">保存</string>
+    <string name="alter_muscle_para">修改</string>
     <string name="single_mode_training_startup">开始训练</string>
     <string name="training_muscle_intensity">强度(%)</string>
+    <string name="alter_bind_member_custom_device_name">重命名</string>
+    <string name="single_mode_training_pause">暂停</string>
+    <string name="single_mode_training_resume">继续</string>
+    <string name="single_mode_training_shutdown">结束</string>
 
 
 </resources>

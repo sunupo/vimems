@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.wifi.aware.Characteristics;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -21,13 +22,18 @@ import android.widget.Toast;
 
 import com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile;
 import com.vimems.R;
+import com.vimems.bean.CustomMusclePara;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import util.BaseActivity;
+
+import static com.vimems.coach.CustomTrainingItemFragment.CUSTOM_MUSCLE_PARA_LIST;
+import static com.vimems.coach.CustomTrainingItemFragment.deviceState;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -94,6 +100,9 @@ public class GattPeripheralDetailActivity extends BaseActivity {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
+    private Bundle muscleParaBundle;
+    private static List<CustomMusclePara> customMuscleParaList;
+
     // Code to manage Service lifecycle.
     //bindService是在onCreate中调用的，随即mServiceConnection的onServiceConnected()方法被调用
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -107,6 +116,7 @@ public class GattPeripheralDetailActivity extends BaseActivity {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
+            deviceState.check(R.id.bind_member_device_connect_state);
 
         }
 
@@ -138,6 +148,7 @@ public class GattPeripheralDetailActivity extends BaseActivity {
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
+                setMuscleParaCharacteristics();
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA).toString());
                 Toast.makeText(GattPeripheralDetailActivity.this,"read is success",Toast.LENGTH_SHORT).show();
@@ -152,6 +163,7 @@ public class GattPeripheralDetailActivity extends BaseActivity {
     // demonstrates 'Read' and 'Notify' features.  See
     // http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
     // list of supported characteristic features.
+
     private final ExpandableListView.OnChildClickListener servicesListClickListner =
             new ExpandableListView.OnChildClickListener() {
                 @Override
@@ -216,11 +228,19 @@ public class GattPeripheralDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gatt_services_characteristics);
+
         Toast.makeText(GattPeripheralDetailActivity.this,"99",Toast.LENGTH_SHORT);
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+
+        // TODO: 2/14/2019 获取参数列表的bundle
+        Bundle muscleParaBundle=new Bundle();
+        muscleParaBundle=intent.getExtras();
+//        customMuscleParaList=new ArrayList<>();
+        customMuscleParaList= (List<CustomMusclePara>) muscleParaBundle.getSerializable(CUSTOM_MUSCLE_PARA_LIST);
+        
 
         // Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
@@ -326,7 +346,6 @@ public class GattPeripheralDetailActivity extends BaseActivity {
         //mGattCharacteristics与gattCharacteristicData大小相同，只是<>类型不一样
         mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
-
         // Loops through available GATT Services.
         //得到了多个服务
         for (BluetoothGattService gattService : gattServices) {
@@ -386,6 +405,50 @@ public class GattPeripheralDetailActivity extends BaseActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
+    }
+    public void setMuscleParaCharacteristics(){
+
+        BluetoothGattCharacteristic bluetoothGattCharacteristic;
+        for (int i = 0; i < mGattCharacteristics.size(); i++) {
+            for (int j = 0; j < mGattCharacteristics.get(i).size(); j++) {
+                bluetoothGattCharacteristic=mGattCharacteristics.get(i).get(j);
+                // TODO: 2/14/2019
+                if(bluetoothGattCharacteristic.getUuid().equals(ParaProfile.MUSCLE1_CHARACTERISTIC)){
+
+                    final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            CustomMusclePara customMusclePara;
+//                            for (int k = 0; k < customMuscleParaList.size(); k++) {
+                                customMusclePara=customMuscleParaList.get(0);
+                                byte[] b=new byte[11];
+                                b[0]= (byte) customMusclePara.getMuscleID();
+                                b[1]= (byte) customMusclePara.getMemberID();
+                                b[2]=(byte)customMusclePara.getTrainingModeCode();
+                                b[3]=(byte)customMusclePara.getTrainingModuleCode();
+                                b[4]=(byte)customMusclePara.getTrainingModuleLevel();
+                                b[5]=(byte)customMusclePara.getLowFrequency();
+                                b[6]=(byte)customMusclePara.getHighFrequency();
+                                b[7]=(byte)customMusclePara.getPulseWidth();
+                                b[8]=(byte)customMusclePara.getPulsePeriod();
+                                b[9]=(byte)customMusclePara.getIntermittentPeriod();
+                                b[10]=(byte)customMusclePara.getIntensity();
+                                BluetoothGattCharacteristic temp;
+                                temp= finalBluetoothGattCharacteristic;
+                                temp.setValue(b);
+                                mBluetoothLeService.writeCharacteristic(temp);
+                                Toast.makeText(GattPeripheralDetailActivity.this,"b[0]="+b[0]+"\n"+"b[1]="+b[1]+"\n"
+                                        +"b[2]="+b[2]+"\n"+"b[3]="+b[3]+"\n"+"b[4]="+b[4]+"\n"+"b[5]="+b[5]+"\n"
+                                        +"b[6]="+b[6]+"\n"+"b[7]="+b[7]+"\n"+"b[8]="+b[8]+"\n"+"b[9]="+b[9]+"\n"+"b[10]="+b[10]+"\n"+"",Toast.LENGTH_LONG).show();
+//                            }
+
+                        }
+                    });
+                }
+            }
+        }
     }
 }
 

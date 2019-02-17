@@ -10,8 +10,9 @@
         android:layout_weight="1"
         android:gravity="center"/>
     <TextView
+        android:layout_gravity="center"
         android:layout_width="5dp"
-        android:layout_height="match_parent"
+        android:layout_height="20dp"
         android:background="@color/colorPrimaryDark"/>
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_bluetoothdevice_address"
@@ -20,6 +21,11 @@
         android:layout_weight="2"
         android:gravity="left|center"
         android:layout_marginLeft="10dp"/>
+    <Button
+        android:text="bind"
+        android:id="@+id/gatt_device_bind_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

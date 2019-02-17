@@ -151,7 +151,6 @@ public class GattMainActivity extends BaseActivity {
     }
      BluetoothAdapter.LeScanCallback mLeScanCallback =
             new BluetoothAdapter.LeScanCallback() {
-
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
                     runOnUiThread(new Runnable() {
@@ -166,5 +165,4 @@ public class GattMainActivity extends BaseActivity {
                     });
                 }
             };
-
 }

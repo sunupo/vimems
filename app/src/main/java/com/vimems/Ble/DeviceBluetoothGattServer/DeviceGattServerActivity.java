@@ -26,14 +26,27 @@ import android.widget.Toast;
 
 import com.vimems.R;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import util.BaseActivity;
 
+import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.MUSCLE1_CHARACTERISTIC;
+import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.MUSCLE2_CHARACTERISTIC;
+import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.MUSCLE3_CHARACTERISTIC;
+import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.MUSCLE4_CHARACTERISTIC;
+import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.uuidList;
+import static com.vimems.coach.CustomTrainingItemFragment.checkBoxIntegerMap;
+
 public class DeviceGattServerActivity extends BaseActivity {
     private static final String TAG=DeviceGattServerActivity.class.getSimpleName();
-    private TextView muscle1ParaTextView;
+    private TextView muscle1ParaTextView,muscle2ParaTextView,muscle3ParaTextView,muscle4ParaTextView
+            ,muscle5ParaTextView,muscle6ParaTextView,muscle7ParaTextView,muscle8ParaTextView
+            ,muscle9ParaTextView,muscle10ParaTextView;
     private BluetoothManager mBluetoothManager;
     private BluetoothGattServer mBluetoothGattServer;
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
@@ -48,6 +61,16 @@ public class DeviceGattServerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_gattt_server);
         muscle1ParaTextView=findViewById(R.id.muscle1_para_textview);
+        muscle2ParaTextView=findViewById(R.id.muscle2_para_textview);
+        muscle3ParaTextView=findViewById(R.id.muscle3_para_textview);
+        muscle4ParaTextView=findViewById(R.id.muscle4_para_textview);
+        muscle5ParaTextView=findViewById(R.id.muscle5_para_textview);
+        muscle6ParaTextView=findViewById(R.id.muscle6_para_textview);
+        muscle7ParaTextView=findViewById(R.id.muscle7_para_textview);
+        muscle8ParaTextView=findViewById(R.id.muscle8_para_textview);
+        muscle9ParaTextView=findViewById(R.id.muscle9_para_textview);
+        muscle10ParaTextView=findViewById(R.id.muscle10_para_textview);
+
 
         //当前活动可见时，保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -113,8 +136,8 @@ public class DeviceGattServerActivity extends BaseActivity {
                 default:
                     break;
             }
-            int para= Integer.parseInt(muscle1ParaTextView.getText().toString());
-            muscle1ParaTextView.setText("para= "+(para-1));
+
+            muscle1ParaTextView.setText("paraChangeReceiver=接收到广播"+new Date());
         }
     };
 
@@ -128,7 +151,7 @@ public class DeviceGattServerActivity extends BaseActivity {
         for (BluetoothDevice device : bluetoothDeviceSet) {
             BluetoothGattCharacteristic muscleParaCharacteristic = mBluetoothGattServer
                     .getService(ParaProfile.PARA_SERVICE)
-                    .getCharacteristic(ParaProfile.MUSCLE1_CHARACTERISTIC);
+                    .getCharacteristic(MUSCLE1_CHARACTERISTIC);
             muscleParaCharacteristic.setValue(bytes);
             mBluetoothGattServer.notifyCharacteristicChanged(device, muscleParaCharacteristic, false);
         }
@@ -208,7 +231,7 @@ public class DeviceGattServerActivity extends BaseActivity {
         mBluetoothGattServer.addService(ParaProfile.createParaService());
 
         // Initialize the local UI
-        muscle1ParaTextView.setText("100");
+        muscle1ParaTextView.setText("接受参数");
     }
 
     private void stopServer() {
@@ -233,37 +256,70 @@ public class DeviceGattServerActivity extends BaseActivity {
         }
 
         @Override
-        public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId,
-                                                 BluetoothGattCharacteristic characteristic,
+        public void onCharacteristicWriteRequest(final BluetoothDevice device, final int requestId,
+                                                 final BluetoothGattCharacteristic characteristic,
                                                  boolean preparedWrite, boolean responseNeeded,
                                                  int offset, final byte[] value) {
+            // TODO: 2/16/2019 接收10个characteristic 设置一个map<MUSCLE1_CHARACTERISTIC,muscle1ParaTextView>,减少代码
+            Map<UUID,TextView> map =initMuscleParaUuidTextViewMap();
+            for (int i = 0; i <map.size() ; i++) {
+                decideWhichMuscle(uuidList.get(i),characteristic,value,device,requestId,map.get(uuidList.get(i)));
+            }
 
-            if(ParaProfile.MUSCLE1_CHARACTERISTIC.equals(characteristic.getUuid())){
+//            decideWhichMuscle(MUSCLE1_CHARACTERISTIC,characteristic,value,device,requestId,muscle1ParaTextView);
+//            decideWhichMuscle(MUSCLE2_CHARACTERISTIC,characteristic,value,device,requestId,muscle2ParaTextView);
+//            decideWhichMuscle(MUSCLE3_CHARACTERISTIC,characteristic,value,device,requestId,muscle3ParaTextView);
+//            decideWhichMuscle(MUSCLE4_CHARACTERISTIC,characteristic,value,device,requestId,muscle4ParaTextView);
+
+        }
+
+        //判断是哪一个muscle对应的uuid
+        private void decideWhichMuscle(final UUID uuid,BluetoothGattCharacteristic characteristic,byte[] value,
+                                       BluetoothDevice device,int requestId,final TextView textView){
+            if(uuid.equals(characteristic.getUuid())){
                 characteristic.setValue(value);
-                Log.i(TAG, "onCharacteristicWriteRequest: Write MUSCLE1_CHARACTERISTIC"+value.toString());
-                mBluetoothGattServer.sendResponse(device,
-                        requestId,
-                        BluetoothGatt.GATT_SUCCESS,
-                        0,
-                        characteristic.getValue()
-                        );
-
-                final String str="value[0]="+value[0]+"\n"+"value[1]="+value[1]+"\n"
-                        +"value[2]="+value[2]+"\n"+"value[3]="+value[3]+"\n";
+                Log.d(TAG, "查看CHARACTERISTIC"+getValueToString(value));
+                mBluetoothGattServer.sendResponse(device,requestId,BluetoothGatt.GATT_SUCCESS,0,characteristic.getValue());
+                final String str=getCustomString(value);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        muscle1ParaTextView.setText(str);
-                        Toast.makeText(DeviceGattServerActivity.this,"99",Toast.LENGTH_SHORT);
+                        textView.setText(str);
+                        Log.d(TAG, "Characteristic uuid: "+uuid.toString());
+                        Toast.makeText(DeviceGattServerActivity.this,"成功接受参数",Toast.LENGTH_SHORT);
                     }
                 });
             }
         }
 
+        private String getCustomString(byte[] value){
+            String string="肌肉位置="+value[0] +"\n"
+                    +"会员id="+value[1]+"\n"
+                    +"ModeCode="+value[2]+"\n"
+                    +"ModuleCode="+value[3]+"\n"
+                    +"等级="+value[4]+"\n"
+                    +"低频="+(value[5]+value[6]*100)+"\n"
+                    +"高频="+(value[7]+value[8]*100)+"\n"
+                    +"脉宽="+value[9]+"\n"
+                    +"脉冲时间="+value[10]+"\n"
+                    +"间歇时间="+value[11]+"\n"
+                    +"强度="+value[12]+"\n";
+            return string;
+        }
+        private String getValueToString(byte[] value){
+            StringBuffer strValue=new StringBuffer();
+            for (int i = 0; i <value.length ; i++) {
+                if(i%13==0) strValue.append("\n");
+                strValue.append(value[i]+",");
+
+            }
+            return strValue.toString();
+        }
+
         @Override
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset,
                                                 BluetoothGattCharacteristic characteristic) {
-            if(ParaProfile.MUSCLE1_CHARACTERISTIC.equals(device.getUuids())){
+            if(MUSCLE1_CHARACTERISTIC.equals(device.getUuids())){
                 Log.i(TAG, "onCharacteristicReadRequest: read MUSCLE1_CHARACTERISTIC");
                 mBluetoothGattServer.sendResponse(device,
                         requestId,
@@ -274,5 +330,19 @@ public class DeviceGattServerActivity extends BaseActivity {
             }
         }
     };
+    private Map<UUID,TextView> initMuscleParaUuidTextViewMap(){
+        Map<UUID,TextView> muscleParaUuidTextViewMap=new HashMap<>();
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE1_CHARACTERISTIC,muscle1ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE2_CHARACTERISTIC,muscle2ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE3_CHARACTERISTIC,muscle3ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE4_CHARACTERISTIC,muscle4ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE5_CHARACTERISTIC,muscle5ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE6_CHARACTERISTIC,muscle6ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE7_CHARACTERISTIC,muscle7ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE8_CHARACTERISTIC,muscle8ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE9_CHARACTERISTIC,muscle9ParaTextView);
+        muscleParaUuidTextViewMap.put(ParaProfile.MUSCLE10_CHARACTERISTIC,muscle10ParaTextView);
+        return muscleParaUuidTextViewMap;
+    }
 
 }

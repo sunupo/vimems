@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimems.Ble.AppBluetoothGatt;
+package com.vimems.mainactivity;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -31,8 +31,8 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.vimems.Ble.AppBluetoothGatt.SampleGattAttributes;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +43,6 @@ import java.util.UUID;
  */
 public class BluetoothLeService extends Service {
     private final static String TAG = BluetoothLeService.class.getSimpleName();
-    public static boolean Write_Characteristic_Callback_Success = true;
 
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
@@ -118,7 +117,6 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 
             if(status==BluetoothGatt.GATT_SUCCESS){
-                Write_Characteristic_Callback_Success=true;
                 broadcastUpdate(ACTION_DATA_WRITE_SUCCESS, characteristic);
             }
         }
@@ -181,7 +179,7 @@ public class BluetoothLeService extends Service {
     }
 
     public class LocalBinder extends Binder {
-        public BluetoothLeService getService() {
+        BluetoothLeService getService() {
             return BluetoothLeService.this;
         }
     }

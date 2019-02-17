@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
+    <LinearLayout android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_device_address"
+            android:textSize="8sp"/>
+        <Space android:layout_width="5dp"
+            android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/device_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"/>
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_state"
+            android:textSize="8sp"/>
+        <Space android:layout_width="5dp"
+            android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/connection_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disconnected"
+            android:textSize="8sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_data"
+            android:textSize="8sp"/>
+        <Space android:layout_width="5dp"
+            android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/data_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data"
+            android:textSize="8sp"/>
+    </LinearLayout>
+    <ExpandableListView android:id="@+id/gatt_services_list"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+<!--上面是隐藏的视图-->
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.AppCompatTextView
+                android:text="设备信息"
+                android:id="@+id/bind_member_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold|italic"
+                android:textSize="38sp"/>
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <android.support.v7.widget.AppCompatTextView
+                            android:text="设备名称:"
+                            android:textSize="16sp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatTextView
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="custom_device_name"
+                            android:id="@+id/bind_member_custom_device_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatTextView
+                            android:visibility="gone"
+                            android:id="@+id/bind_member_device_default_device_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <android.support.v7.widget.AppCompatTextView
+                            android:text="设备地址:"
+                            android:textSize="16sp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/bind_member_default_device_address"
+                            android:layout_width="400px"
+                            android:layout_height="wrap_content" />
+                    </android.support.v7.widget.LinearLayoutCompat>
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <android.support.v7.widget.AppCompatTextView
+                            android:text="连接状态"
+                            android:textSize="16sp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <RadioGroup
+                            android:id="@+id/bind_member_device_connect_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <android.support.v7.widget.AppCompatRadioButton
+                                android:id="@+id/device_state_connected"
+                                android:checked="false"
+                                android:text="已连接"
+                                android:clickable="false"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <android.support.v7.widget.AppCompatRadioButton
+                                android:id="@+id/device_state_disconnected"
+                                android:checked="false"
+                                android:text="未连接"
+                                android:clickable="false"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </RadioGroup>
+                    </android.support.v7.widget.LinearLayoutCompat>
+                </android.support.v7.widget.LinearLayoutCompat>
+            </LinearLayout>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.AppCompatTextView
+                android:text="参数设置"
+                android:id="@+id/custom_training_options_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold|italic"
+                android:textSize="38sp"/>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/custom_training_mode_item_level"
+                    android:textSize="15sp"
+                    android:layout_width="125dp"
+                    android:layout_height="match_parent" />
+                <RadioGroup
+                    android:id="@+id/training_item_level_radio_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/training_item_level_a"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/training_item_level_primary" />
+                    <RadioButton
+                        android:id="@+id/training_item_level_b"
+                        android:text="@string/training_item_level_intermediate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                    <RadioButton
+                        android:id="@+id/training_item_level_c"
+                        android:text="@string/training_item_level_senior"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                </RadioGroup>
+            </android.support.v7.widget.LinearLayoutCompat>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/low_frequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/custom_training_mode_item_low_frequency"
+                    android:textSize="15sp"
+                    android:layout_width="125dp"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/low_frequency_textview"
+                    android:text="50"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/low_frequency_textview_decrease"
+                    android:text="—"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/low_frequency_textview_increase"
+                    android:text="+"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/high_frequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/custom_training_mode_item_high_frequency"
+                    android:textSize="15sp"
+                    android:layout_width="125dp"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/high_frequency_textview"
+                    android:text="5000"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/high_frequency_textview_decrease"
+                    android:text="—"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/high_frequency_textview_increase"
+                    android:text="+"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/custom_training_mode_item_pulse_width"
+                    android:textSize="15sp"
+                    android:layout_width="125dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/pulse_width_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_weight="8"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="12" />
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/pulse_width_textview_decrease"
+                    android:text="—"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/pulse_width_textview_increase"
+                    android:text="+"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/custom_training_mode_item_pulse_peroid"
+                    android:textSize="15sp"
+                    android:layout_width="125dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/pulse_period_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_weight="8"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="12" />
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/pulse_period_textview_decrease"
+                    android:text="—"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/pulse_period_textview_increase"
+                    android:text="+"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/custom_training_mode_item_intermittent_period"
+                    android:textSize="15sp"
+                    android:layout_width="125dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/intermittent_period_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_weight="8"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="12" />
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/intermittent_period_textview_decrease"
+                    android:text="—"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/intermittent_period_textview_increase"
+                    android:text="+"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+            <android.support.v7.widget.LinearLayoutCompat
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/training_muscle_intensity"
+                    android:textSize="15sp"
+                    android:layout_width="125dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/training_muscle_intensity_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_weight="8"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="50" />
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/intensity_textview_decrease"
+                    android:text="—"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/intensity_textview_increase"
+                    android:text="+"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+            <!--分割线-->
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:text="分割"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:alpha="0"/>
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/training_muscle_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:textSize="15sp"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:paddingLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/front_muscle"
+                    android:textSize="15sp"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    />
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/muscle_xiongdaji"
+                    android:text="@string/muscle_xiongdaji"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/muscle_fuji"
+                    android:text="@string/muscle_fuji"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </android.support.v7.widget.LinearLayoutCompat>
+            <android.support.v7.widget.LinearLayoutCompat
+                android:paddingLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/back_muscle"
+                    android:textSize="15sp" />
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/muscle_xiefangji"
+                    android:text="@string/muscle_xiefangji"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/muscle_beikuoji"
+                    android:text="@string/muscle_beikuoji"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:paddingLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingRight="5dp">
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|left"
+                        android:text="@string/other_muscle"
+                        android:textSize="15sp" />
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/muscle_item_checked_all"
+                        android:id="@+id/muscle_item_checked_all"/>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/muscle_a"
+                            android:text="@string/muscle_a"
+                            android:textSize="15sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/muscle_b"
+                            android:text="@string/muscle_b"
+                            android:textSize="15sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/muscle_c"
+                            android:text="@string/muscle_c"
+                            android:textSize="15sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </android.support.v7.widget.LinearLayoutCompat>
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/muscle_d"
+                            android:text="@string/muscle_d"
+                            android:textSize="15sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/muscle_e"
+                            android:text="@string/muscle_e"
+                            android:textSize="15sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/muscle_f"
+                            android:text="@string/muscle_f"
+                            android:textSize="15sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+        <android.support.v7.widget.LinearLayoutCompat
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/alter_muscle_para"
+                android:text="@string/alter_muscle_para"
+                android:textSize="8sp"
+                android:layout_gravity="right"
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+        </android.support.v7.widget.LinearLayoutCompat>
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/single_mode_training_startup"
+                android:text="@string/single_mode_training_startup"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/single_mode_training_pause"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/single_mode_training_pause" />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/single_mode_training_resume"
+                android:text="@string/single_mode_training_resume"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/single_mode_training_shutdown"
+                android:text="@string/single_mode_training_shutdown"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+
+</LinearLayout>
