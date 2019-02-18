@@ -34,6 +34,9 @@ import util.BaseActivity;
 
 import static com.vimems.coach.CustomTrainingItemFragment.CUSTOM_MUSCLE_PARA_LIST;
 import static com.vimems.coach.CustomTrainingItemFragment.deviceState;
+import static util.Constants.EXTRAS_DEVICE_ADDRESS;
+import static util.Constants.EXTRAS_DEVICE_NAME;
+
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -76,9 +79,6 @@ import static com.vimems.coach.CustomTrainingItemFragment.deviceState;
 
 public class GattPeripheralDetailActivity extends BaseActivity {
     private final static String TAG = DeviceControlActivity.class.getSimpleName();
-
-    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
-    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
     private TextView mConnectionState;
     private TextView mDataField;

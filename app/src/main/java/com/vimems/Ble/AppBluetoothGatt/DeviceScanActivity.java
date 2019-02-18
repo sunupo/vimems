@@ -40,6 +40,10 @@ import com.vimems.R;
 
 import java.util.ArrayList;
 
+import static util.Constants.EXTRAS_DEVICE_ADDRESS;
+import static util.Constants.EXTRAS_DEVICE_NAME;
+
+
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
@@ -164,8 +168,8 @@ public class DeviceScanActivity extends ListActivity {
         final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
         if (device == null) return;
         final Intent intent = new Intent(this, DeviceControlActivity.class);
-        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
-        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        intent.putExtra(EXTRAS_DEVICE_NAME, device.getName());
+        intent.putExtra(EXTRAS_DEVICE_ADDRESS, device.getAddress());
         if (mScanning) {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
             mScanning = false;

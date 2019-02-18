@@ -41,6 +41,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static util.Constants.EXTRAS_DEVICE_ADDRESS;
+import static util.Constants.EXTRAS_DEVICE_NAME;
+
+
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
  * and display GATT services and characteristics supported by the device.  The Activity
@@ -76,8 +80,7 @@ import java.util.List;
 public class DeviceControlActivity extends Activity {
     private final static String TAG = DeviceControlActivity.class.getSimpleName();
 
-    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
-    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+
 
     private TextView mConnectionState;
     private TextView mDataField;

@@ -1,39 +1,56 @@
 package com.vimems.mainactivity;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.net.wifi.aware.Characteristics;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vimems.Adapter. TrainingMainGattDeviceAdapter;
 import com.vimems.Ble.AppBluetoothGatt.BluetoothLeService;
 import com.vimems.Ble.AppBluetoothGatt.DeviceControlActivity;
 import com.vimems.Ble.AppBluetoothGatt.SampleGattAttributes;
 import com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile;
 import com.vimems.R;
 import com.vimems.bean.CustomMusclePara;
+import com.vimems.coach.MemberDetailActivity;
+
+import org.litepal.LitePal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import util.BaseActivity;
@@ -42,7 +59,11 @@ import static com.vimems.Ble.AppBluetoothGatt.BluetoothLeService.Write_Character
 import static com.vimems.coach.CustomTrainingItemFragment.CUSTOM_MUSCLE_PARA_LIST;
 import static com.vimems.coach.CustomTrainingItemFragment.checkBoxIntegerMap;
 import static com.vimems.coach.CustomTrainingItemFragment.deviceState;
-
+import static java.lang.Thread.sleep;
+import static util.Constants.EXTRAS_DEVICE_ADDRESS;
+import static util.Constants.EXTRAS_DEVICE_NAME;
+import static util.Constants.REQUEST_ENABLE_BT;
+import static util.Constants.SCAN_PERIOD;
 
 /**
  *  onCreate()   中通过
@@ -73,14 +94,12 @@ import static com.vimems.coach.CustomTrainingItemFragment.deviceState;
 public class SingleModeTrainingMainActivity extends BaseActivity {
     private final static String TAG = SingleModeTrainingMainActivity.class.getSimpleName();
 
-    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
-    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-
+    private BluetoothAdapter mBluetoothAdapter;
     private TextView mConnectionState;
     private TextView mDataField;
 
     private String mDeviceName;
-    private String mDeviceAddress;
+    public static String mDeviceAddress;//暴露给 TrainingMainGattDeviceAdapter，点击绑定的时候，更改mac地址
 
     private ExpandableListView mGattServicesList;
 
@@ -102,6 +121,20 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
     private final String FINAL_CHARACTERISTIC="FINAL_CHARACTERISTIC";
     private final String FINAL_K="FINAL_K";
 
+    public static RecyclerView scanResultDeviceRecyclerView;
+    private LinearLayoutManager recyclerViewlinearLayoutManager;
+    private  TrainingMainGattDeviceAdapter gattDeviceAdapter;
+    private ArrayList<BluetoothDevice> bluetoothDeviceArrayList=new ArrayList<>();
+    private static boolean mScanning;
+    private Handler mHandler;
+    public static TextView trainingPageDeviceName;
+    public static TextView defaultDeviceAddress;
+    private Button scanDeviceTrigger;
+    private final String STARTUP_SCAN="扫描";
+    private final String SHUTDOWN_SCAN="停止";
+    private RadioGroup connectStateRadioGroup;
+
+
     // Code to manage Service lifecycle.
     //bindService是在onCreate中调用的，随即mServiceConnection的onServiceConnected()方法被调用
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -115,7 +148,7 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
-            deviceState.check(R.id.bind_member_device_connect_state);
+//            deviceState.check(R.id.bind_member_device_connect_state);
 
         }
 
@@ -139,10 +172,14 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                 mConnected = true;
                 updateConnectionState(R.string.connected);
                 invalidateOptionsMenu();
+                //状态显示为已连接
+                connectStateRadioGroup.check(R.id.device_state_connected);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
                 invalidateOptionsMenu();
+                //状态显示为未连接
+                connectStateRadioGroup.check(R.id.device_state_disconnected);
                 clearUI();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
@@ -231,10 +268,17 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
     * */
     private void handlerHandleMessageRun(final BluetoothGattCharacteristic finalBluetoothGattCharacteristic,
                                          final int finalK){
-        while(!Write_Characteristic_Callback_Success){}//上一次回调是否成功，不成功继续等待
-        Write_Characteristic_Callback_Success=false;
+
+//        while(!Write_Characteristic_Callback_Success){}//上一次回调是否成功，不成功继续等待
+//        Write_Characteristic_Callback_Success=false;
         mBluetoothLeService.writeCharacteristic(finalBluetoothGattCharacteristic);
-        Log.d(TAG+"setMuscleCharacteristic   ", ""+customMuscleParaList.get(finalK).getMuscleID());
+        Log.d(TAG+"        writeMuscleCharacteristic   ", ""+customMuscleParaList.get(finalK).getMuscleID());
+//        用延时函数代替
+        try {
+            sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
     @Override
@@ -242,46 +286,116 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_mode_training_main);
 
-        handler=new Handler(){
+        //通过BluetoothManager初始化BluetoothAdapter
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+        scanResultDeviceRecyclerView = findViewById(R.id.single_mode_training_main_activity_device_recycler_view);
+        recyclerViewlinearLayoutManager = new LinearLayoutManager(this);
+        scanResultDeviceRecyclerView.setLayoutManager(recyclerViewlinearLayoutManager);
+        gattDeviceAdapter = new TrainingMainGattDeviceAdapter(bluetoothDeviceArrayList);
+        scanResultDeviceRecyclerView.setAdapter(gattDeviceAdapter);
+
+        defaultDeviceAddress=findViewById(R.id.bind_member_default_device_address);
+        trainingPageDeviceName= findViewById(R.id.bind_member_custom_device_name);
+        scanDeviceTrigger=findViewById(R.id.scan_bluetooth_trigger);
+        connectStateRadioGroup=findViewById(R.id.bind_member_device_connect_state);
+        scanDeviceTrigger.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void handleMessage(Message msg) {
-                Bundle bundle;
-                bundle=msg.getData();
-                final BluetoothGattCharacteristic finalBluetoothGattCharacteristic=bundle.getParcelable(FINAL_CHARACTERISTIC);
-                final int finalK=bundle.getInt(FINAL_K);
-                switch (msg.what){
-                    case 0:
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                               handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
-                            }
-                        }).start();
+            public void onClick(View v) {
+                switch (scanDeviceTrigger.getText().toString()){
+                    case STARTUP_SCAN:
+                        bluetoothDeviceArrayList.clear();
+                        scanDeviceTrigger.setText(SHUTDOWN_SCAN);
+                        scanLeDevice(true);
                         break;
-                        default:
-                            break;
+                    case SHUTDOWN_SCAN:
+                        scanDeviceTrigger.setText(STARTUP_SCAN);
+                        scanLeDevice(false);
+                        break;
                 }
             }
-        };
+        });
+
+        mHandler=new Handler();
+
+        scanLeDevice(true);
+
+//        handler=new Handler(){
+//            @Override
+//            public void handleMessage(Message msg) {
+//                Bundle bundle;
+//                bundle=msg.getData();
+//                final BluetoothGattCharacteristic finalBluetoothGattCharacteristic=bundle.getParcelable(FINAL_CHARACTERISTIC);
+//                final int finalK=bundle.getInt(FINAL_K);
+//                switch (msg.what){
+//                    case 1:
+//                        Thread t1=new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+//                            }
+//                        });
+//                        t1.start();
+//                        try {
+//                            t1.join();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+//                    case 2:
+//                        Thread t2=new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+//                            }
+//                        });
+//                        t2.start();
+//                        try {
+//                            t2.join();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+//
+//                        default:
+//                            break;
+//                }
+//            }
+//        };
 //        Toast.makeText(SingleModeTrainingMainActivity.this,"99",Toast.LENGTH_SHORT);
         final Intent intent = getIntent();
+//        Set<String> intentCategoriesSet=intent.getCategories();
+//        if(intentCategoriesSet.contains(CUSTOM_TRAINING_ITEM_FRAGMENT_INTENT_CATEGORY)){
+//            mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+//            mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+//
+//            // TODO: 2/14/2019 获取参数列表的bundle
+//            //获取从MemberDetailActivity的CustomTrainingItemFragment（设置参数的Fragment）传递过来的训练时肌肉参数
+//            muscleParaBundle=intent.getExtras();
+//            customMuscleParaList= (List<CustomMusclePara>) muscleParaBundle.getSerializable(CUSTOM_MUSCLE_PARA_LIST);
+//        }else{
+//            mDeviceName=deviceDefaultCustomNameMap.get(memberIDDeviceMap.get(intent.getIntExtra(MEMBER_ID,1)));
+//            mDeviceAddress=memberIDDeviceMap.get(intent.getIntExtra(MEMBER_ID,1)).getAddress();
+////            customMuscleParaList=LitePal.where().find(CustomMusclePara.class);
+//        }
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
         // TODO: 2/14/2019 获取参数列表的bundle
-        Bundle muscleParaBundle=new Bundle();
+        //获取从MemberDetailActivity的CustomTrainingItemFragment（设置参数的Fragment）传递过来的训练时肌肉参数
         muscleParaBundle=intent.getExtras();
-//        customMuscleParaList=new ArrayList<>();
         customMuscleParaList= (List<CustomMusclePara>) muscleParaBundle.getSerializable(CUSTOM_MUSCLE_PARA_LIST);
 
 
         // Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
+        trainingPageDeviceName.setText(mDeviceName);
+        defaultDeviceAddress.setText(mDeviceAddress);
         mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
         mGattServicesList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-
                 return false;
             }
         });
@@ -296,6 +410,51 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
+    private void scanLeDevice(final boolean enable) {
+        if (enable) {
+            // Stops scanning after a pre-defined scan period.
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScanning = false;
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    if (bluetoothDeviceArrayList.size()!=0){
+//                        customDeviceName.setText(bluetoothDeviceArrayList.get(0).getName());
+//                        deviceAddress.setText(bluetoothDeviceArrayList.get(0).getAddress());
+                        Toast.makeText(SingleModeTrainingMainActivity.this,"扫描结束！"+"\n"
+                                +"设备数目="+bluetoothDeviceArrayList.size(),Toast.LENGTH_SHORT).show();
+                    }
+                    invalidateOptionsMenu();
+                }
+            }, SCAN_PERIOD);
+
+            mScanning = true;
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
+        } else {
+            mScanning = false;
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        }
+        invalidateOptionsMenu();//optionMenu需要被重新create
+    }
+    BluetoothAdapter.LeScanCallback mLeScanCallback =
+            new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!bluetoothDeviceArrayList.contains(device)) {
+                                bluetoothDeviceArrayList.add(device);
+                                gattDeviceAdapter.notifyDataSetChanged();//如果适配器的内容改变时需要刷新每个Item的内容。
+                                scanResultDeviceRecyclerView.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+                }
+            };
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -304,17 +463,39 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.d(TAG, "Connect request result=" + result);
         }
+
+        //确保蓝牙已打开，否则弹出警示框dialog询问用户是否开启蓝牙；
+        if (!mBluetoothAdapter.isEnabled()) {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        // 如果用户选择取消启动蓝牙
+        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
+            finish();
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
+
+        scanLeDevice(false);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
     }
@@ -332,11 +513,23 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         return true;
     }
 
+
+    /*
+     * 在切换连接断开状态时，几秒过后再点击连接会出现无法连接情况
+     * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.menu_connect:
-                mBluetoothLeService.connect(mDeviceAddress);
+                if(!mBluetoothLeService.connect(mDeviceAddress)){
+                    if (!mBluetoothLeService.initialize()) {
+                        Log.e(TAG, "Unable to initialize Bluetooth");
+                        finish();
+                    }
+                    if(!mBluetoothLeService.connect(mDeviceAddress)){
+                        Log.e(TAG, "重连失败");
+                    }
+                }
                 return true;
             case R.id.menu_disconnect:
                 mBluetoothLeService.disconnect();
@@ -439,20 +632,28 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
-
+    private static Message[] messages=new Message[10];
+    static {
+        for (int i = 0; i < messages.length; i++) {
+            messages[i]=new Message();
+        }
+    }
     private void putHandlerMessage(final BluetoothGattCharacteristic finalBluetoothGattCharacteristic,
-                                   final int finalK){
-        Message message=new Message();
-        message.what=0;
+                                   final int finalK,final int muscleID){
+
+        messages[muscleID-1]=new Message();
+        messages[muscleID-1].what=muscleID;
         Bundle bundle=new Bundle();
         bundle.putParcelable("FINAL_CHARACTERISTIC",finalBluetoothGattCharacteristic);
         bundle.putInt("FINAL_K",finalK);
-        message.setData(bundle);
-        handler.sendMessage(message);
+        messages[muscleID-1].setData(bundle);
+        handler.sendMessage(messages[muscleID-1]);
 
     }
     public void setMuscleParaCharacteristics(){
 
+        Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10;
+        Set<Thread> threadSet=new HashSet<>();
         BluetoothGattCharacteristic bluetoothGattCharacteristic;
         CustomMusclePara customMusclePara;
         byte[] b;
@@ -470,7 +671,22 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-                                    putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
+                                    t1 =new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t1", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t1", "is  over ");
+                                        }
+                                    });
+                                    threadSet.add(t1);
+//                                    t1.start();
+//                                    try {
+//                                        t1.join();
+//                                    } catch (InterruptedException e) {
+//                                        e.printStackTrace();
+//                                        Log.d("join() exception", "1");
+//                                    }
                                 }
                             }
                             break;
@@ -480,13 +696,17 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t2=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
-////                                    t2.setPriority(2);
+                                    t2=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t2", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t2", "is over: ");
+
+                                        }
+                                    });
+                                     threadSet.add(t2);
+
 //                                    t2.start();
 //                                    try {
 //                                        t2.join();
@@ -503,13 +723,16 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t3=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
-////                                    t3.setPriority(3);
+
+                                    t3=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t3", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t3", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t3);
 //                                    t3.start();
 //                                    try {
 //                                        t3.join();
@@ -526,13 +749,17 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t4=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
-////                                    t4.setPriority(4);
+
+                                    t4=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t4", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t4", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t4);
+//                                    t4.setPriority(4);
 //                                    t4.start();
 //                                    try {
 //                                        t4.join();
@@ -549,13 +776,17 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t5=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
-////                                    t5.setPriority(5);
+
+                                    t5=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t5", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t5", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t5);
+//                                    t5.setPriority(5);
 //                                    t5.start();
 //                                    try {
 //                                        t5.join();
@@ -572,12 +803,16 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t6=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
+
+                                    t6=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t6", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t6", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t6);
 //                                    t6.setPriority(6);
 //                                    t6.start();
 //                                    try {
@@ -595,13 +830,17 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t7=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
-////                                    t7.setPriority(7);
+
+                                    t7=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t7", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t7", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t7);
+//                                    t7.setPriority(7);
 //                                    t7.start();
 //                                    try {
 //                                        t7.join();
@@ -618,13 +857,16 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t8=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
-////                                    t8.setPriority(8);
+                                    t8=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t8", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t8", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t8);
+//                                    t8.setPriority(8);
 //                                    t8.start();
 //                                    try {
 //                                        t8.join();
@@ -641,13 +883,17 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t9=new Thread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
-//                                        }
-//                                    });
-////                                    t9.setPriority(9);
+
+                                    t9=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t9", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t9", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t9);
+//                                    t9.setPriority(9);
 //                                    t9.start();
 //                                    try {
 //                                        t9.join();
@@ -664,13 +910,22 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                                     bluetoothGattCharacteristic.setValue(b);
                                     final BluetoothGattCharacteristic finalBluetoothGattCharacteristic = bluetoothGattCharacteristic;
                                     final int finalK = k;
-//                                    Thread t10=new Thread(new Runnable() {
+//                                    runOnUiThread(new Runnable() {
 //                                        @Override
 //                                        public void run() {
-                                            putHandlerMessage(finalBluetoothGattCharacteristic,finalK);
+//                                    putHandlerMessage(finalBluetoothGattCharacteristic,finalK,10);
 //                                        }
 //                                    });
-////                                    t10.setPriority(10);
+                                    t10=new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("t10", "is running: ");
+                                            handlerHandleMessageRun(finalBluetoothGattCharacteristic,finalK);
+                                            Log.d("t10", "is over: ");
+                                        }
+                                    });
+                                    threadSet.add(t10);
+//                                    t10.setPriority(10);
 //                                    t10.start();
 //                                    try {
 //                                        t10.join();
@@ -686,6 +941,27 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                     }
                 }
             }
+        }
+        Log.d("threadSet.size()", "= "+threadSet.size());
+
+        Iterator<Thread> iterator=threadSet.iterator();
+        Thread tempThread;
+        while(iterator.hasNext()){
+
+            tempThread=iterator.next();
+            Log.d("tempThread.start()", ""+tempThread.getName());
+            /*
+            * 这一段特别重要，必须先start在join，顺序执行
+            * */
+            tempThread.start();
+
+            try {
+                tempThread.join();
+                Log.d("tempThread.join()", ""+tempThread.getName());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
     }
     /*

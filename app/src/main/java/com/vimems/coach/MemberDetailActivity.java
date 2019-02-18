@@ -16,11 +16,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.vimems.Adapter.CustomTrainingFragmentPageAdapter;
@@ -28,18 +26,18 @@ import com.vimems.Adapter.GattDeviceAdapter;
 import com.vimems.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import util.BaseActivity;
 
-import static com.vimems.coach.CustomTrainingFragment.ARG_PAGE;
-import static com.vimems.coach.CustomTrainingItemFragment.customDeviceName;
-import static com.vimems.coach.CustomTrainingItemFragment.deviceAddress;
+
+import static util.Constants.ARG_PAGE;
 import static util.Constants.REQUEST_ENABLE_BT;
+import static util.Constants.SCAN_PERIOD;
 
 public class MemberDetailActivity extends BaseActivity {
+
+    private BluetoothAdapter mBluetoothAdapter;
 
     public static RecyclerView gattDeviceRecyclerView;
     private LinearLayoutManager recyclerViewlinearLayoutManager;
@@ -53,16 +51,13 @@ public class MemberDetailActivity extends BaseActivity {
     
     List<Fragment> fragmentList;
 
-    public static BluetoothAdapter mBluetoothAdapter;
+
     private Handler mHandler;
     private ArrayList<BluetoothDevice> bluetoothDeviceArrayList=new ArrayList<>();
-    //绑定<memberID,deviceAddress>MAP
-    public static Map<Integer,BluetoothDevice> memberIDDeviceMap=new HashMap<>();
-    //更改设备名称<默认设备名称,自定义设备名称>MAP
-    public static Map<BluetoothDevice,String> deviceDefaultCustomNameMap=new HashMap<>();
-    //设置多少毫秒ms后停止扫描
-    private static final long SCAN_PERIOD = 5000;
-    public static boolean mScanning;
+
+    private static boolean mScanning;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +70,7 @@ public class MemberDetailActivity extends BaseActivity {
             Toast.makeText(this,R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
+
 
         //通过BluetoothManager初始化BluetoothAdapter
         final BluetoothManager bluetoothManager =

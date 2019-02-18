@@ -40,18 +40,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.vimems.coach.CustomTrainingFragment.ARG_PAGE;
-import static com.vimems.coach.CustomTrainingFragment.MEMBER_ID;
 import static com.vimems.coach.CustomTrainingFragment.RECOVERY;
-import static com.vimems.coach.CustomTrainingFragment.TRAINING_ITEM;
-import static com.vimems.coach.MemberDetailActivity.deviceDefaultCustomNameMap;
-import static com.vimems.coach.MemberDetailActivity.mBluetoothAdapter;
-import static com.vimems.coach.MemberDetailActivity.memberIDDeviceMap;
+import static util.Constants.ARG_PAGE;
+import static util.Constants.CUSTOM_TRAINING_ITEM_FRAGMENT_INTENT_CATEGORY;
+import static util.Constants.EXTRAS_DEVICE_ADDRESS;
+import static util.Constants.EXTRAS_DEVICE_NAME;
+import static util.Constants.MEMBER_ID;
+import static util.Constants.TRAINING_ITEM;
+
+
 
 /*
 * 用来替代4个fragment的
 * */
 public class CustomTrainingItemFragment extends Fragment {
+
+
 
     public static final String CUSTOM_MUSCLE_PARA_LIST ="CUSTOM_MUSCLE_PARA_LIST" ;
     private int page;//page=trainingModeCode，就是自定义训练1、vip训练3
@@ -84,6 +88,11 @@ public class CustomTrainingItemFragment extends Fragment {
 
     public static Map<CheckBox,Integer> checkBoxIntegerMap;//每一个checkbox对应一个整数id
     public static Map<Integer,Integer> radioButtonIdIntegerMap;//每一个radiobutton对应一个整数id
+
+    //绑定<memberID,deviceAddress>MAP
+    public static Map<Integer,BluetoothDevice> memberIDDeviceMap=new HashMap<>();
+    //更改设备名称<默认设备名称,自定义设备名称>MAP
+    public static Map<BluetoothDevice,String> deviceDefaultCustomNameMap=new HashMap<>();
 
     public static EditText customDeviceName;
     public static TextView deviceAddress;
@@ -271,6 +280,7 @@ public class CustomTrainingItemFragment extends Fragment {
         savePara.setOnClickListener(new View.OnClickListener() {//把每一个肌肉的训练参数，保存到数据库中
             @Override
             public void onClick(View v) {
+                initCheckBoxSet();
                 Iterator<CheckBox> checkBoxIterator=checkedBoxSet.iterator();
                 Boolean saveState=false;
                 //<p>Returns the identifier of the selected radio button in this group.
@@ -365,13 +375,15 @@ public class CustomTrainingItemFragment extends Fragment {
                     customMuscleParaList.add(customMusclePara);
                 }
                 Intent intent=new Intent(v.getContext(),SingleModeTrainingMainActivity.class);
-                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, customDeviceName.getText().toString());
-                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, deviceAddress.getText().toString());
+                intent.putExtra(EXTRAS_DEVICE_NAME, customDeviceName.getText().toString());
+                intent.putExtra(EXTRAS_DEVICE_ADDRESS, deviceAddress.getText().toString());
 
                 Bundle bundle=new Bundle();
                 bundle.putSerializable(CUSTOM_MUSCLE_PARA_LIST,(Serializable)customMuscleParaList);
                 //bundle.putSerializable("xiongdaji",customMuscleParaList.get(0));
                 intent.putExtras(bundle);
+                intent.addCategory(CUSTOM_TRAINING_ITEM_FRAGMENT_INTENT_CATEGORY);
+                intent.putExtra(MEMBER_ID,memberID);
                 startActivity(intent);
             }
         });
@@ -392,13 +404,6 @@ public class CustomTrainingItemFragment extends Fragment {
                         beikuoji.setChecked(false);
                         xiefangji.setChecked(false);
 //                        checkBox.setChexked(false);应该是能触发监听事件onCheckedChanged
-//                        这儿判断一下，保险起见
-//                        if(checkedBoxSet.contains(beikuoji)){
-//                            checkedBoxSet.remove(beikuoji);
-//                        }
-//                        if(checkedBoxSet.contains(xiefangji)){
-//                            checkedBoxSet.remove(xiefangji);
-//                        }
                     }
                 }
                 if (buttonView.equals(xiefangji)||buttonView.equals(beikuoji)){
@@ -409,13 +414,6 @@ public class CustomTrainingItemFragment extends Fragment {
                         xiongdaji.setChecked(false);
                         fuji.setChecked(false);
 //                        checkBox.setChexked(false);应该是能触发监听事件onCheckedChanged
-//                        这儿判断一下，保险起见
-//                        if(checkedBoxSet.contains(xiongdaji)){
-//                            checkedBoxSet.remove(xiongdaji);
-//                        }
-//                        if(checkedBoxSet.contains(fuji)){
-//                            checkedBoxSet.remove(fuji);
-//                        }
                     }
                 }
             }

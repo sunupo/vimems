@@ -41,6 +41,7 @@ import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.MUSCLE3_CHARA
 import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.MUSCLE4_CHARACTERISTIC;
 import static com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile.uuidList;
 import static com.vimems.coach.CustomTrainingItemFragment.checkBoxIntegerMap;
+import static java.lang.Thread.sleep;
 
 public class DeviceGattServerActivity extends BaseActivity {
     private static final String TAG=DeviceGattServerActivity.class.getSimpleName();
@@ -260,17 +261,13 @@ public class DeviceGattServerActivity extends BaseActivity {
                                                  final BluetoothGattCharacteristic characteristic,
                                                  boolean preparedWrite, boolean responseNeeded,
                                                  int offset, final byte[] value) {
+            Log.d(TAG, "onCharacteristicWriteRequest: "+characteristic.getUuid().toString());
             // TODO: 2/16/2019 接收10个characteristic 设置一个map<MUSCLE1_CHARACTERISTIC,muscle1ParaTextView>,减少代码
             Map<UUID,TextView> map =initMuscleParaUuidTextViewMap();
             for (int i = 0; i <map.size() ; i++) {
                 decideWhichMuscle(uuidList.get(i),characteristic,value,device,requestId,map.get(uuidList.get(i)));
             }
-
 //            decideWhichMuscle(MUSCLE1_CHARACTERISTIC,characteristic,value,device,requestId,muscle1ParaTextView);
-//            decideWhichMuscle(MUSCLE2_CHARACTERISTIC,characteristic,value,device,requestId,muscle2ParaTextView);
-//            decideWhichMuscle(MUSCLE3_CHARACTERISTIC,characteristic,value,device,requestId,muscle3ParaTextView);
-//            decideWhichMuscle(MUSCLE4_CHARACTERISTIC,characteristic,value,device,requestId,muscle4ParaTextView);
-
         }
 
         //判断是哪一个muscle对应的uuid
@@ -285,6 +282,11 @@ public class DeviceGattServerActivity extends BaseActivity {
                     @Override
                     public void run() {
                         textView.setText(str);
+//                        try {
+//                            sleep(200);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
                         Log.d(TAG, "Characteristic uuid: "+uuid.toString());
                         Toast.makeText(DeviceGattServerActivity.this,"成功接受参数",Toast.LENGTH_SHORT);
                     }

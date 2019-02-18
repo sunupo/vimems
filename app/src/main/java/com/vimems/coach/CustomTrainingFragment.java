@@ -13,10 +13,13 @@ import android.widget.RadioGroup;
 
 import com.vimems.R;
 
+import static util.Constants.ARG_PAGE;
+import static util.Constants.MEMBER_ID;
+import static util.Constants.TRAINING_ITEM;
+
+
 public class CustomTrainingFragment extends Fragment {
-    public static final String ARG_PAGE="ARG_PAGE";
-    public static final String TRAINING_ITEM="TRAINING_ITEM";
-    public static final String MEMBER_ID="MEMBER_ID";
+
     private int mPage;
     private int memberID;
     public static final int GAIN_MUSCLE=1;

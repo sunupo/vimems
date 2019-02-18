@@ -144,6 +144,7 @@
     <string name="single_mode_training_pause">暂停</string>
     <string name="single_mode_training_resume">继续</string>
     <string name="single_mode_training_shutdown">结束</string>
+    <string name="scan_bluetooth_trigger">扫描</string>
 
 
 </resources>

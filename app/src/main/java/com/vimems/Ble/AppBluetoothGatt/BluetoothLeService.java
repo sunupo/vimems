@@ -41,6 +41,25 @@ import java.util.UUID;
  * Service for managing connection and data communication with a GATT server hosted on a
  * given Bluetooth LE device.
  */
+/**
+ * BluetoothGatt常规用到的几个操作示例:
+ *
+ * connect() ：连接远程设备。
+ * discoverServices() : 搜索连接设备所支持的service。
+ * disconnect()：断开与远程设备的GATT连接。
+ * close()：关闭GATT Client端。
+ * readCharacteristic(characteristic) ：读取指定的characteristic。
+ * setCharacteristicNotification(characteristic, enabled) ：设置当指定characteristic值变化时，发出通知。
+ * getServices() ：获取远程设备所支持的services。
+ */
+/**
+ * 注：
+ * 1、某些函数调用之间存在先后关系。例如首先需要connect上才能discoverServices。
+ * 2、 一些函数调用是异步的，需要得到的值不会立即返回，而会在BluetoothGattCallback的回调函数中返回。
+ * 例如 discoverServices与onServicesDiscovered回调，readCharacteristic与 onCharacteristicRead回调，
+ * setCharacteristicNotification与 onCharacteristicChanged回调等。
+ */
+
 public class BluetoothLeService extends Service {
     private final static String TAG = BluetoothLeService.class.getSimpleName();
     public static boolean Write_Characteristic_Callback_Success = true;
@@ -237,6 +256,9 @@ public class BluetoothLeService extends Service {
      *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
      *         callback.
      */
+    /*
+    * 调用mBluetoothGatt.connect()
+    * */
     public boolean connect(final String address) {
         if (mBluetoothAdapter == null || address == null) {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
@@ -247,9 +269,14 @@ public class BluetoothLeService extends Service {
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-            if (mBluetoothGatt.connect()) {
+
+            if (mBluetoothGatt.connect()) {//调用mBluetoothGatt.connect()
+
                 mConnectionState = STATE_CONNECTING;
-                return true;
+                Log.d(TAG, "STATE_CONNECTING.");
+//                这儿不能返回true，不知道为什么，mBluetoothGatt.connect()的值未true才进入的该方法，
+//                却实际上未连接上
+//                return true;
             } else {
                 return false;
             }
@@ -258,7 +285,10 @@ public class BluetoothLeService extends Service {
       if(!BluetoothAdapter.checkBluetoothAddress(address) ){
           return false;
       }
-        final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+      /*
+      * 被去掉了final修饰符
+      * */
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         if (device == null) {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
