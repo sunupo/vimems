@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="headicon_style">
+        <item name="android:layout_width">@dimen/dimen_80</item>
+        <item name="android:layout_height">@dimen/dimen_80</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_5</item>
+        <item name="android:layout_marginRight">@dimen/dimen_10</item>
+        <item name="android:src">@drawable/ic_launcher_foreground</item>
+    </style>
+
 </resources>

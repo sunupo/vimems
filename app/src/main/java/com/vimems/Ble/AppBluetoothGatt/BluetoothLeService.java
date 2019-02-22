@@ -275,7 +275,9 @@ public class BluetoothLeService extends Service {
                 mConnectionState = STATE_CONNECTING;
                 Log.d(TAG, "STATE_CONNECTING.");
 //                这儿不能返回true，不知道为什么，mBluetoothGatt.connect()的值未true才进入的该方法，
-//                却实际上未连接上
+//                却实际上未连接上，我这二跳出了这个返回，进入到后面的mBluetoothAdapter.getRemoteDevice(address);
+//               可能原因： 多次扫描蓝牙，在华为荣耀，魅族M3 NOTE 中有的机型，会发现多次断开–扫描–断开–扫描… 会扫描不到设备，
+//                          此时需要在断开连接后，不能立即扫描，而是要先停止扫描后，过2秒再扫描才能扫描到设备。
 //                return true;
             } else {
                 return false;
@@ -316,6 +318,11 @@ public class BluetoothLeService extends Service {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
+        /**
+         * 当连接断开后要调closeGatt释放资源，不用调disconnect，
+         * 也不要下次复用之前的gatt来reconnect，因为有的手机上重连可能会存在问题，比如重连后死活发现不了service。
+         * 这种情况下，最好只要断开连接就close gatt，下次连接时打开全新的gatt，这样就可以发现service了。
+         */
         mBluetoothGatt.disconnect();
     }
 

@@ -55,6 +55,9 @@
         <service
             android:name=".Ble.AppBluetoothGatt.BluetoothLeService"
             android:enabled="true" />
+        <service
+            android:name=".mainactivity.BluetoothLeService"
+            android:enabled="true" />
 
         <!--&lt;!&ndash;<activity android:name=".Ble.DeviceBluetoothGattServer.GattServerActivity" />
         <activity android:name=".Ble.AppBluetoothGatt.DeviceControlActivity" />-->
@@ -62,6 +65,8 @@
         <activity android:name=".coach.MemberDetailActivity"/>
         <activity android:name=".Ble.BindDeviceActivity"/>
         <activity android:name=".mainactivity.SingleModeTrainingMainActivity"/>
+        <activity android:name=".mainactivity.SingleMultiplyaerModeSelecteActivity"/>
+        <activity android:name=".mainactivity.MultiplayerModeTrainingMainActivity"/>
 
     </application>
 

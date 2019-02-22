@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:layout_gravity="center">
+    <android.support.v7.widget.AppCompatTextView
+        android:visibility="invisible"
+        android:text="√"
+        android:id="@+id/add_device_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_bluetoothdevice_name"
@@ -24,7 +32,7 @@
         android:layout_marginLeft="10dp"/>
 
     <Button
-        android:text="bind"
+        android:text="添加"
         android:id="@+id/gatt_device_bind_member"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

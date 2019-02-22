@@ -19,6 +19,7 @@ import com.vimems.bean.Coach;
 import com.vimems.bean.Member;
 import com.vimems.mainactivity.AdminMainActivity;
 import com.vimems.mainactivity.CoachMainActivity;
+import com.vimems.mainactivity.SingleMultiplyaerModeSelecteActivity;
 
 import org.litepal.LitePal;
 
@@ -163,6 +164,7 @@ public class LoginActivity extends BaseActivity {
             }
             Toast.makeText(LoginActivity.this, "登陆成功！", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+
             intent.putExtra("adminLoginName",username);
             LoginActivity.this.startActivity(intent);
         }else{
@@ -203,7 +205,8 @@ public class LoginActivity extends BaseActivity {
                 sp.edit().remove("ISCHECKED").commit();
             }
             Toast.makeText(LoginActivity.this, "登陆成功！", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(LoginActivity.this, CoachMainActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, CoachMainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, SingleMultiplyaerModeSelecteActivity.class);
             intent.putExtra("coachLoginName",username);
             LoginActivity.this.startActivity(intent);
         }else{

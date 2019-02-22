@@ -35,4 +35,5 @@ dependencies {
     //  https://github.com/LitePalFramework/LitePal
     implementation 'org.litepal.android:java:3.0.0'
     implementation project(':vitamio')
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
 }

@@ -12,8 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.net.wifi.aware.Characteristics;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,39 +24,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vimems.Adapter. TrainingMainGattDeviceAdapter;
-import com.vimems.Ble.AppBluetoothGatt.BluetoothLeService;
-import com.vimems.Ble.AppBluetoothGatt.DeviceControlActivity;
+//import com.vimems.Ble.AppBluetoothGatt.BluetoothLeService;
 import com.vimems.Ble.AppBluetoothGatt.SampleGattAttributes;
 import com.vimems.Ble.DeviceBluetoothGattServer.ParaProfile;
 import com.vimems.R;
 import com.vimems.bean.CustomMusclePara;
-import com.vimems.coach.MemberDetailActivity;
 
-import org.litepal.LitePal;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import util.BaseActivity;
 
-import static com.vimems.Ble.AppBluetoothGatt.BluetoothLeService.Write_Characteristic_Callback_Success;
 import static com.vimems.coach.CustomTrainingItemFragment.CUSTOM_MUSCLE_PARA_LIST;
-import static com.vimems.coach.CustomTrainingItemFragment.checkBoxIntegerMap;
-import static com.vimems.coach.CustomTrainingItemFragment.deviceState;
 import static java.lang.Thread.sleep;
 import static util.Constants.EXTRAS_DEVICE_ADDRESS;
 import static util.Constants.EXTRAS_DEVICE_NAME;
@@ -117,7 +108,6 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
 
     private Bundle muscleParaBundle;
     private static List<CustomMusclePara> customMuscleParaList;
-    private Handler handler;
     private final String FINAL_CHARACTERISTIC="FINAL_CHARACTERISTIC";
     private final String FINAL_K="FINAL_K";
 
@@ -134,6 +124,19 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
     private final String SHUTDOWN_SCAN="停止";
     private RadioGroup connectStateRadioGroup;
 
+    private RadioGroup trainingItemLevelRadioGroup;
+    private TextView lowFrequency,highFrequency,pulseWidth,pulsePeriod,intermittent,intensity;
+    private Button intensityDecrease,intensityIncrease;
+
+    private CheckBox shiftMuscleItemCheckedStateAll;
+    private CheckBox xiongdaji,fuji,xiefangji,beikuoji,
+            musclea,muscleb,musclec,muscled,musclee,musclef;
+    private List<CheckBox> allCheckBoxList;
+
+    //第一次进入本页面的时候，记录上个页面传过来的参数值，因为不关注肌肉ID，所以只用了一个CustomMusclePara对象
+    private CustomMusclePara oldCustomMusclePara;
+
+    private Map<Integer,CheckBox> integerCheckBoxMap;//每一个id对应一个整数i
 
     // Code to manage Service lifecycle.
     //bindService是在onCreate中调用的，随即mServiceConnection的onServiceConnected()方法被调用
@@ -141,6 +144,7 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
+            Log.d(TAG, "onServiceConnected: ");
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
                 Log.e(TAG, "Unable to initialize Bluetooth");
@@ -165,6 +169,7 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
     // ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
     //                        or notification operations.
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
@@ -212,22 +217,19 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                         final BluetoothGattCharacteristic characteristic =
                                 mGattCharacteristics.get(groupPosition).get(childPosition);
 
-                        if(characteristic.getUuid().equals(ParaProfile.MUSCLE1_CHARACTERISTIC)){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    byte[] b=new byte[11];
-                                    b[0]=0;b[1]=2;b[2]=3;b[3]=8;b[4]=12;b[5]=2;b[6]=3;b[7]=8;
-                                    b[8]=12;b[9]=2;b[10]=3;
-                                    BluetoothGattCharacteristic temp;
-                                    temp=characteristic;
-                                    temp.setValue(b);
-                                    mBluetoothLeService.writeCharacteristic(temp);
-                                    Toast.makeText(SingleModeTrainingMainActivity.this,"b[0]="+b[0]+"\n"+"b[1]="+b[1]+"\n"
-                                            +"b[2]="+b[2]+"\n"+"b[3]="+b[3]+"\n"+"",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
+//                        if(characteristic.getUuid().equals(ParaProfile.MUSCLE1_CHARACTERISTIC)){
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    byte[] b=new byte[11];
+//                                    b[0]=0;b[1]=2;b[2]=3;b[3]=8;b[4]=12;b[5]=2;b[6]=3;b[7]=8;b[8]=12;b[9]=2;b[10]=3;
+//                                    characteristic.setValue(b);
+//                                    mBluetoothLeService.writeCharacteristic(characteristic);
+//                                    Toast.makeText(SingleModeTrainingMainActivity.this,"b[0]="+b[0]+"\n"+"b[1]="+b[1]+"\n"
+//                                            +"b[2]="+b[2]+"\n"+"b[3]="+b[3]+"\n"+"",Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//                        }
 
                         final int charaProp = characteristic.getProperties();
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
@@ -281,25 +283,82 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         }
 
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_mode_training_main);
+    private void alterMuscleParaCharacteristicsRun(final BluetoothGattCharacteristic finalBluetoothGattCharacteristic){
+        mBluetoothLeService.writeCharacteristic(finalBluetoothGattCharacteristic);
+        Log.d(TAG, " alterWriteMuscleCharacteristic   "+finalBluetoothGattCharacteristic.getUuid().toString());
+//        用延时函数代替
+        try {
+            sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    private void initCheckBoxIntegerMap(){
+        //在绑定bindAll，得到十块肌肉的CheckBox对象过后，才能执行
+        Log.d(TAG, "initCheckBoxIntegerMap: ");
+        integerCheckBoxMap=new HashMap<>();
+        integerCheckBoxMap.put(1,xiongdaji);
+        integerCheckBoxMap.put(2,fuji);
+        integerCheckBoxMap.put(3,xiefangji);
+        integerCheckBoxMap.put(4,beikuoji);
+        integerCheckBoxMap.put(5,musclea);
+        integerCheckBoxMap.put(6,muscleb);
+        integerCheckBoxMap.put(7,musclec);
+        integerCheckBoxMap.put(8,muscled);
+        integerCheckBoxMap.put(9,musclee);
+        integerCheckBoxMap.put(10,musclef);
+    }
+    private void bindAll(){
+        Log.d(TAG, "bindAll: ");
+        shiftMuscleItemCheckedStateAll=findViewById(R.id.muscle_item_checked_all);
+        xiongdaji=findViewById(R.id.muscle_xiongdaji);
+        fuji=findViewById(R.id.muscle_fuji);
+        xiefangji=findViewById(R.id.muscle_xiefangji);
+        beikuoji=findViewById(R.id.muscle_beikuoji);
+        musclea=findViewById(R.id.muscle_a);
+        muscleb=findViewById(R.id.muscle_b);
+        musclec=findViewById(R.id.muscle_c);
+        muscled=findViewById(R.id.muscle_d);
+        musclee=findViewById(R.id.muscle_e);
+        musclef=findViewById(R.id.muscle_f);
 
-        //通过BluetoothManager初始化BluetoothAdapter
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-        scanResultDeviceRecyclerView = findViewById(R.id.single_mode_training_main_activity_device_recycler_view);
-        recyclerViewlinearLayoutManager = new LinearLayoutManager(this);
-        scanResultDeviceRecyclerView.setLayoutManager(recyclerViewlinearLayoutManager);
-        gattDeviceAdapter = new TrainingMainGattDeviceAdapter(bluetoothDeviceArrayList);
-        scanResultDeviceRecyclerView.setAdapter(gattDeviceAdapter);
+        allCheckBoxList=new ArrayList<>();
+        allCheckBoxList.add(xiongdaji);
+        allCheckBoxList.add(fuji);
+        allCheckBoxList.add(xiefangji);
+        allCheckBoxList.add(beikuoji);
+        allCheckBoxList.add(musclea);
+        allCheckBoxList.add(muscleb);
+        allCheckBoxList.add(musclec);
+        allCheckBoxList.add(muscled);
+        allCheckBoxList.add(musclee);
+        allCheckBoxList.add(musclef);
+
+        trainingItemLevelRadioGroup=findViewById(R.id.training_item_level_radio_group);
+        lowFrequency=findViewById(R.id.low_frequency_textview);
+        highFrequency=findViewById(R.id.high_frequency_textview);
+        pulseWidth=findViewById(R.id.pulse_width_textview);
+        pulsePeriod=findViewById(R.id.pulse_period_textview);
+        intermittent=findViewById(R.id.intermittent_period_textview);
+
+        intensity=findViewById(R.id.training_muscle_intensity_textview);
+        intensityDecrease=findViewById(R.id.intensity_textview_decrease);
+        intensityIncrease=findViewById(R.id.intensity_textview_increase);
 
         defaultDeviceAddress=findViewById(R.id.bind_member_default_device_address);
         trainingPageDeviceName= findViewById(R.id.bind_member_custom_device_name);
         scanDeviceTrigger=findViewById(R.id.scan_bluetooth_trigger);
         connectStateRadioGroup=findViewById(R.id.bind_member_device_connect_state);
+
+        mConnectionState = (TextView) findViewById(R.id.connection_state);
+        mDataField = (TextView) findViewById(R.id.data_value);
+        mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
+
+        initCheckBoxIntegerMap();//在绑定bindAll，得到十块肌肉的CheckBox对象过后，才能执行
+
+    }
+    private void setAllListener(){
+        Log.d(TAG, "setAllListener: ");
         scanDeviceTrigger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -316,11 +375,138 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                 }
             }
         });
+        mGattServicesList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                return false;
+            }
+        });
+        mGattServicesList.setOnChildClickListener(servicesListClickListner);
+        shiftMuscleItemCheckedStateAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    musclea.setChecked(true);
+                    muscleb.setChecked(true);
+                    musclec.setChecked(true);
+                    muscled.setChecked(true);
+                    musclee.setChecked(true);
+                    musclef.setChecked(true);
+                }else{
+                    musclea.setChecked(false);
+                    muscleb.setChecked(false);
+                    musclec.setChecked(false);
+                    muscled.setChecked(false);
+                    musclee.setChecked(false);
+                    musclef.setChecked(false);
+                }
+            }
+        });
+        intensityDecrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentValue=Integer.parseInt(intensity.getText().toString());
+                if(currentValue>0){
+                    intensity.setText(Integer.parseInt(intensity.getText().toString())-1+"");
+                    // writeCharacteristic
+                    alterMuscleParaCharacteristics();
+                }else{
+                    Toast.makeText(v.getContext(),"已经是最小值了",Toast.LENGTH_SHORT).show();
+                }
 
-        mHandler=new Handler();
+            }
+        });
+        intensityIncrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentValue=Integer.parseInt(intensity.getText().toString());
+                if(currentValue<100){
+                    intensity.setText(Integer.parseInt(intensity.getText().toString())+1+"");
+                    //writeCharateristic
+                    alterMuscleParaCharacteristics();
 
-        scanLeDevice(true);
+                }else{
+                    Toast.makeText(v.getContext(),"已经是最大值了",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
+    }
+    private void initScanResultDeviceRecyclerView(){
+        Log.d(TAG, "initScanResultDeviceRecyclerView: ");
+        //通过BluetoothManager初始化BluetoothAdapter
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+        scanResultDeviceRecyclerView = findViewById(R.id.single_mode_training_main_activity_device_recycler_view);
+        recyclerViewlinearLayoutManager = new LinearLayoutManager(this);
+        scanResultDeviceRecyclerView.setLayoutManager(recyclerViewlinearLayoutManager);
+        gattDeviceAdapter = new TrainingMainGattDeviceAdapter(bluetoothDeviceArrayList);
+        scanResultDeviceRecyclerView.setAdapter(gattDeviceAdapter);
+    }
+    private void getIntentData(){
+        Log.d(TAG, "getIntentData: ");
+        final Intent intent = getIntent();
+        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+
+        // TODO: 2/14/2019 获取参数列表的bundle
+        //获取从MemberDetailActivity的CustomTrainingItemFragment（设置参数的Fragment）传递过来的训练时肌肉参数
+        muscleParaBundle=intent.getExtras();
+        customMuscleParaList= (List<CustomMusclePara>) muscleParaBundle.getSerializable(CUSTOM_MUSCLE_PARA_LIST);
+    }
+    private void setSelectedCheckBoxVisible(){//在customMuscleParaList初始化之后调用
+        Log.d(TAG, "setSelectedCheckBoxVisible: ");
+
+        for (int i = 0; i < integerCheckBoxMap.size(); i++) {
+            integerCheckBoxMap.get(i+1).setVisibility(View.GONE);//隐藏所有CheckBox，使用i+1，是因为key是从1-10
+            integerCheckBoxMap.get(i+1).setChecked(false);//设置所有的CheckBox为未选中状态
+        }
+
+        for (int i = 0; i < customMuscleParaList.size(); i++) {//根据页面床过来的参数，判断哪一些CheckBox可以显示，并设置为选中状态
+            Log.d(TAG, "setSelectedCheckBoxVisible: "+integerCheckBoxMap.get(customMuscleParaList.get(i).getMuscleID()));
+            integerCheckBoxMap.get(customMuscleParaList.get(i).getMuscleID())
+                    .setVisibility(View.VISIBLE);
+            integerCheckBoxMap.get(customMuscleParaList.get(i).getMuscleID()).setChecked(true);
+        }
+    }
+    private void setInitDisplayState(){
+        /*
+        * 须在bindAll过后使用
+        * */
+        Log.d(TAG, "setInitDisplayState: ");
+        ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
+        trainingPageDeviceName.setText(mDeviceName);
+        defaultDeviceAddress.setText(mDeviceAddress);
+
+        oldCustomMusclePara=customMuscleParaList.get(0);//因为从参数设置页面跳转到本页面的，所有选择的肌肉的参数除了ID不同，其它都相同
+        int level=oldCustomMusclePara.getTrainingModuleLevel();
+        trainingItemLevelRadioGroup.check(level==1?R.id.training_item_level_a:level==2?R.id.training_item_level_b:R.id.training_item_level_c);
+        lowFrequency.setText(oldCustomMusclePara.getLowFrequency()+"");
+        highFrequency.setText(oldCustomMusclePara.getHighFrequency()+"");
+        pulseWidth.setText(oldCustomMusclePara.getPulseWidth()+"");
+        pulsePeriod.setText(oldCustomMusclePara.getPulsePeriod()+"");
+        intermittent.setText(oldCustomMusclePara.getIntermittentPeriod()+"");
+        intensity.setText(oldCustomMusclePara.getIntensity()+"");
+
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
+        setContentView(R.layout.activity_single_mode_training_main);
+        bindAll();
+        initScanResultDeviceRecyclerView();
+        setAllListener();
+
+        mHandler=new Handler();//需在使用scanLeDevice之前声明
+
+//        关闭第一次打开界面就自动扫描
+//        scanLeDevice(true);
+
+        getIntentData();
 //        handler=new Handler(){
 //            @Override
 //            public void handleMessage(Message msg) {
@@ -364,7 +550,7 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
 //            }
 //        };
 //        Toast.makeText(SingleModeTrainingMainActivity.this,"99",Toast.LENGTH_SHORT);
-        final Intent intent = getIntent();
+
 //        Set<String> intentCategoriesSet=intent.getCategories();
 //        if(intentCategoriesSet.contains(CUSTOM_TRAINING_ITEM_FRAGMENT_INTENT_CATEGORY)){
 //            mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -379,35 +565,14 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
 //            mDeviceAddress=memberIDDeviceMap.get(intent.getIntExtra(MEMBER_ID,1)).getAddress();
 ////            customMuscleParaList=LitePal.where().find(CustomMusclePara.class);
 //        }
-        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
-        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
-
-        // TODO: 2/14/2019 获取参数列表的bundle
-        //获取从MemberDetailActivity的CustomTrainingItemFragment（设置参数的Fragment）传递过来的训练时肌肉参数
-        muscleParaBundle=intent.getExtras();
-        customMuscleParaList= (List<CustomMusclePara>) muscleParaBundle.getSerializable(CUSTOM_MUSCLE_PARA_LIST);
-
-
-        // Sets up UI references.
-        ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
-        trainingPageDeviceName.setText(mDeviceName);
-        defaultDeviceAddress.setText(mDeviceAddress);
-        mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
-        mGattServicesList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                return false;
-            }
-        });
-
-        mGattServicesList.setOnChildClickListener(servicesListClickListner);
-        mConnectionState = (TextView) findViewById(R.id.connection_state);
-        mDataField = (TextView) findViewById(R.id.data_value);
+        setSelectedCheckBoxVisible();//在customMuscleParaList初始化之后调用
+        setInitDisplayState();
 
         //getActionBar().setTitle(mDeviceName);
         //getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        Log.d(TAG, "bindService: ");
     }
 
     private void scanLeDevice(final boolean enable) {
@@ -522,6 +687,7 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         switch(item.getItemId()) {
             case R.id.menu_connect:
                 if(!mBluetoothLeService.connect(mDeviceAddress)){
+                    //下面mBluetoothLeService.initialize())可以注释掉
                     if (!mBluetoothLeService.initialize()) {
                         Log.e(TAG, "Unable to initialize Bluetooth");
                         finish();
@@ -566,9 +732,10 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         String unknownCharaString = getResources().getString(R.string.unknown_characteristic);
 
         //new SimpleExpandableListAdapter需要这两个参数gattServiceData、gattCharacteristicData
-        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
-        ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
-                = new ArrayList<ArrayList<HashMap<String, String>>>();
+        ArrayList<HashMap<String, String>>
+                gattServiceData = new ArrayList<HashMap<String, String>>();
+        ArrayList<ArrayList<HashMap<String, String>>>
+                gattCharacteristicData = new ArrayList<ArrayList<HashMap<String, String>>>();
         //mGattCharacteristics与gattCharacteristicData大小相同，只是<>类型不一样
         mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
@@ -606,6 +773,8 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
             }
+//            和mGattCharacteristic.add(chars)应该是等价的；
+//            mGattCharacteristics.add((ArrayList<BluetoothGattCharacteristic>) gattCharacteristics);
             mGattCharacteristics.add(charas);//并把这一组值charas添加到mGattCharacteristics
             gattCharacteristicData.add(gattCharacteristicGroupData);
         }
@@ -630,6 +799,7 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(BluetoothLeService.ACTION_DATA_WRITE_SUCCESS);
         return intentFilter;
     }
     private static Message[] messages=new Message[10];
@@ -647,8 +817,268 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         bundle.putParcelable("FINAL_CHARACTERISTIC",finalBluetoothGattCharacteristic);
         bundle.putInt("FINAL_K",finalK);
         messages[muscleID-1].setData(bundle);
-        handler.sendMessage(messages[muscleID-1]);
+        mHandler.sendMessage(messages[muscleID-1]);
 
+    }
+    /*构造alter之后的CustomMusclePara参数*/
+    private CustomMusclePara getAlterCustomMusclePara(int muscleID,int intensityValue){
+        CustomMusclePara alterCustomPara=new CustomMusclePara();
+        alterCustomPara.setMuscleID(muscleID);
+        alterCustomPara.setMemberID(oldCustomMusclePara.getMemberID());
+        alterCustomPara.setTrainingModeCode(oldCustomMusclePara.getTrainingModeCode());
+        alterCustomPara.setTrainingModuleCode(oldCustomMusclePara.getTrainingModuleCode());
+        alterCustomPara.setTrainingModuleLevel(oldCustomMusclePara.getTrainingModuleLevel());
+        alterCustomPara.setLowFrequency(oldCustomMusclePara.getLowFrequency());
+        alterCustomPara.setHighFrequency(oldCustomMusclePara.getHighFrequency());
+        alterCustomPara.setPulseWidth(oldCustomMusclePara.getPulseWidth());
+        alterCustomPara.setPulsePeriod(oldCustomMusclePara.getPulsePeriod());
+        alterCustomPara.setIntermittentPeriod(oldCustomMusclePara.getIntermittentPeriod());
+        alterCustomPara.setIntensity(intensityValue);
+        return alterCustomPara;
+    }
+    /*
+     * 实时修改肌肉训练强度
+     * */
+    private void alterMuscleParaCharacteristics(){
+        // TODO: 2/19/2019 判断在调节肌肉强度的时候，那些肌肉选中了，以便确定写入哪些characteristic
+        List<Integer> currentSelectedCheckBoxIDList=new ArrayList<>();
+        for (int i = 0; i < allCheckBoxList.size(); i++) {
+            if(allCheckBoxList.get(i).isChecked()){//allCheckBoxList是按照肌肉ID：1-10的顺序添加的
+                currentSelectedCheckBoxIDList.add(i+1);
+            }
+        }
+        Log.d("currentSelectedCheckBoxIDList", ""+currentSelectedCheckBoxIDList.size()+"--最大id="+currentSelectedCheckBoxIDList.get(currentSelectedCheckBoxIDList.size()-1));
+        List<Thread> threadList=new ArrayList<>();
+        Thread[] threads=new Thread[currentSelectedCheckBoxIDList.size()];
+        CustomMusclePara[] alterCustomMuscleParas=new CustomMusclePara[currentSelectedCheckBoxIDList.size()];
+        byte[] b;
+        BluetoothGattCharacteristic characteristic;
+        int intensityValue=Integer.parseInt(intensity.getText().toString());
+        for (int i = 0; i < mGattCharacteristics.size(); i++) {
+            for (int j = 0; j < mGattCharacteristics.get(i).size(); j++) {
+
+                characteristic = mGattCharacteristics.get(i).get(j);//得到的characteristic
+
+                for (int c = 0; c < currentSelectedCheckBoxIDList.size(); c++) {
+                    alterCustomMuscleParas[c]=new CustomMusclePara();
+                    if(currentSelectedCheckBoxIDList.get(c)==1
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE1_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+                        }
+
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==2
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE2_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==3
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE3_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==4
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE4_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==5
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE5_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==6
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE6_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==7
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE7_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==8
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE8_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==9
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE9_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+                    }
+                    if(currentSelectedCheckBoxIDList.get(c)==10
+                            &&characteristic.getUuid().equals(ParaProfile.MUSCLE10_CHARACTERISTIC)){
+                        alterCustomMuscleParas[c]=getAlterCustomMusclePara(currentSelectedCheckBoxIDList.get(c),intensityValue);
+
+                        b=setConcreteMusclePara(alterCustomMuscleParas[c]);//即将写入characteristic的值
+                        if(b.length>0){
+                            characteristic.setValue(b);
+                            final BluetoothGattCharacteristic finalCharacteristic = characteristic;
+                            threads[c]=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alterMuscleParaCharacteristicsRun(finalCharacteristic);
+                                }
+                            });
+                            threadList.add(threads[c]);
+                            Log.d(TAG, "alterMuscleParaCharacteristics: -->threadList.add(threads[c])"+currentSelectedCheckBoxIDList.get(c));
+
+                        }
+                    }
+
+                }
+            }
+        }
+        Log.d("threadList.size()", "= "+threadList.size());
+
+        Iterator<Thread> iterator=threadList.iterator();
+        Thread tempThread;
+        while(iterator.hasNext()){
+
+            tempThread=iterator.next();
+            Log.d("tempThread.start()", ""+tempThread.getName());
+//          这一段特别重要，必须先start在join，顺序执行
+            tempThread.start();
+            try {
+                tempThread.join();
+                Log.d("tempThread.join()", ""+tempThread.getName());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
     public void setMuscleParaCharacteristics(){
 
@@ -660,7 +1090,7 @@ public class SingleModeTrainingMainActivity extends BaseActivity {
         for (int i = 0; i < mGattCharacteristics.size(); i++) {
             for (int j = 0; j < mGattCharacteristics.get(i).size(); j++) {
                 bluetoothGattCharacteristic=mGattCharacteristics.get(i).get(j);
-                // TODO: 2/14/2019写入13个characteristic 逻辑好像不对
+                // TODO: 2/14/2019写入13个characteristic
                 for(int k=0;k<customMuscleParaList.size();k++){
                     customMusclePara=customMuscleParaList.get(k);
                     b=setConcreteMusclePara(customMusclePara);

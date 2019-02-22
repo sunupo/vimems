@@ -37,14 +37,15 @@
                         android:gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
+
                     <android.support.v7.widget.AppCompatEditText
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:text="custom_device_name"
-                        android:enabled="false"
                         android:id="@+id/bind_member_custom_device_name"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:text="未绑定" />
                     <android.support.v7.widget.AppCompatTextView
                         android:visibility="gone"
                         android:id="@+id/bind_member_device_default_device_name"

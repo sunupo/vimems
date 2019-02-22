@@ -19,6 +19,7 @@ public class Constants {
     public  static  int timeoutMillis=0;
 
     public static final String[] TRAINING_MODE = {"自定义训练","课程训练","VIP训练"};
+    public static final String[] MULTIPLAYER_TRAINING_MODE = {"自定义训练","课程训练","VIP训练"};
 
     //设置多少毫秒ms后停止扫描
     public static final int SCAN_PERIOD = 5000;
@@ -30,5 +31,8 @@ public class Constants {
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+
+    public static final String COACH_LOGIN_NAME="coachLoginName";
+
 
 }

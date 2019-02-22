@@ -12,7 +12,7 @@
 
 
         <LinearLayout android:orientation="horizontal"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
@@ -28,7 +28,7 @@
                 android:textSize="8sp"/>
         </LinearLayout>
         <LinearLayout android:orientation="horizontal"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
@@ -45,7 +45,7 @@
                 android:textSize="8sp"/>
         </LinearLayout>
         <LinearLayout
-            android:visibility="visible"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 android:textSize="8sp"/>
         </LinearLayout>
         <ExpandableListView android:id="@+id/gatt_services_list"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="1500px"/>
         <!--上面是隐藏的视图-->
@@ -95,6 +95,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <android.support.v7.widget.RecyclerView
+                            android:visibility="gone"
                             android:id="@+id/single_mode_training_main_activity_device_recycler_view"
                             android:layout_width="match_parent"
                             android:layout_height="200dp">
@@ -222,16 +223,19 @@
                         android:orientation="horizontal">
 
                         <RadioButton
+                            android:clickable="false"
                             android:id="@+id/training_item_level_a"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:text="@string/training_item_level_primary" />
                         <RadioButton
+                            android:clickable="false"
                             android:id="@+id/training_item_level_b"
                             android:text="@string/training_item_level_intermediate"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent" />
                         <RadioButton
+                            android:clickable="false"
                             android:id="@+id/training_item_level_c"
                             android:text="@string/training_item_level_senior"
                             android:layout_width="wrap_content"
@@ -446,6 +450,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/colorAccent"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <android.support.v7.widget.LinearLayoutCompat
                     android:visibility="visible"
                     android:layout_width="match_parent"
@@ -482,6 +492,7 @@
                     android:layout_height="2dp"
                     android:background="@color/colorAccent"/>
             </LinearLayout>
+
             <android.support.v7.widget.AppCompatTextView
                 android:text="分割"
                 android:layout_width="match_parent"

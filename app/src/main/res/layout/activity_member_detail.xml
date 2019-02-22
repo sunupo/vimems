@@ -15,7 +15,7 @@
         android:visibility="gone"
         android:id="@+id/member_detail_device_scan_result_recycler_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp">
 
     </android.support.v7.widget.RecyclerView>
     <!--todo 可以改为一个TableLa+ViewPage-->

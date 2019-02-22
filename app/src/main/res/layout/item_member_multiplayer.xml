@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.AppCompatTextView
+        android:visibility="gone"
+        android:text="√"
+        android:id="@+id/member_bind_device_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/member_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <!--<de.hdodenhof.circleimageview.CircleImageView-->
+
+        <!--android:id="@+id/member_image"-->
+        <!--style="@style/headicon_style"-->
+        <!--app:civ_border_color="@color/design_default_color_primary_dark"-->
+        <!--app:civ_border_width="@dimen/dimen_2"></>-->
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/member_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"/>
+    <android.support.v7.widget.AppCompatButton
+        android:visibility="visible"
+        android:id="@+id/member_bind_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:text="bind"/>
+
+
+</LinearLayout>

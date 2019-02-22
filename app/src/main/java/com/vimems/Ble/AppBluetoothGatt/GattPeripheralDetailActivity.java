@@ -236,7 +236,7 @@ public class GattPeripheralDetailActivity extends BaseActivity {
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
         // TODO: 2/14/2019 获取参数列表的bundle
-        Bundle muscleParaBundle=new Bundle();
+        Bundle muscleParaBundle;
         muscleParaBundle=intent.getExtras();
 //        customMuscleParaList=new ArrayList<>();
         customMuscleParaList= (List<CustomMusclePara>) muscleParaBundle.getSerializable(CUSTOM_MUSCLE_PARA_LIST);

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+        <TextView
+            android:text="@string/multiplayer_mode"
+            android:layout_gravity="center"
+            android:textStyle="bold|italic"
+            android:textColor="@color/design_default_color_primary_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.LinearLayoutCompat
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!--多人模式下只有自定义训练和视频课程训练
+        但是自定义训练选择好参数过后，不能再单独为个人更改脉冲时间和间歇时间-->
+            <android.support.design.widget.TabLayout
+                android:id="@+id/multiplayer_training_mode_tab"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:tabMode="fixed"
+                app:tabGravity="fill">
+            </android.support.design.widget.TabLayout>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/multiplayer_training_mode_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v4.view.ViewPager>
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <!--显示扫描的可用设备列表，device_recycler_view-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/multiplayer_mode_device_scan_result_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="160dp">
+        </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right">
+            <!--按下toggle button，显示device_recycler_view-->
+            <ToggleButton
+                android:textOn="@string/display_device_recyclerview"
+                android:textOff="@string/hide_device_recyclerview"
+                android:id="@+id/display_device_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <!--选择设备过后，把连接按钮alpha设置为1-->
+            <android.support.v7.widget.AppCompatButton
+                android:alpha="0.5"
+                android:id="@+id/connect_selected_device"
+                android:text="@string/connect_all_selected_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"/>
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/multiplayer_mode_coach_member_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
