@@ -39,6 +39,17 @@ public class MultiplayerGattDeviceAdapter extends RecyclerView.Adapter<Multiplay
             bluetoothDeviceName=itemView.findViewById(R.id.item_bluetoothdevice_name);
             bluetoothDeviceAddress=itemView.findViewById(R.id.item_bluetoothdevice_address);
             addDeviceButton=itemView.findViewById(R.id.gatt_device_bind_member);
+
+            ((MultiplayerModeTrainingMainActivity)itemView.getContext()).setDeviceRecyclerViewControllerItem(new MultiplayerModeTrainingMainActivity.DeviceRecyclerViewController() {
+                @Override
+                public void setDeviceRecyclerViewOnClickAble(boolean onClickAble) {
+                    addDeviceButton.setClickable(onClickAble);
+                }
+                @Override
+                public void setDeviceRecyclerViewAlpha(float alpha) {
+                    addDeviceButton.setAlpha(alpha);
+                }
+            });
         }
     }
 

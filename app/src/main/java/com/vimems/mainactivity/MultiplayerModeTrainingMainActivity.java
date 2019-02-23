@@ -19,6 +19,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,15 +31,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TableLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.vimems.Adapter.MultiplayerGattDeviceAdapter;
 import com.vimems.Adapter.MultiplayerMemberAdapter;
+import com.vimems.Adapter.MutiplayerTrainingModePageAdapter;
 import com.vimems.R;
 import com.vimems.bean.Coach;
 import com.vimems.bean.CustomMusclePara;
 import com.vimems.bean.Member;
+import com.vimems.coach.CustomTrainingFragment;
+import com.vimems.coach.MultiplayerCustomTrainingFragment;
+import com.vimems.coach.VideoTrainingFragment;
 
 import org.litepal.LitePal;
 
@@ -48,15 +57,34 @@ import java.util.Map;
 import util.BaseActivity;
 import util.InitBean;
 
+import static util.Constants.ARG_PAGE;
 import static util.Constants.COACH_LOGIN_NAME;
 import static util.Constants.REQUEST_ENABLE_BT;
 import static util.Constants.SCAN_PERIOD;
+import static util.Constants.TRAINING_MODE_CODE;
+
+/**
+ * 情况1.fragment向activity传递值：
+ * 首先在fragment中写一个接口，fragment然后在需要传递值得地方调用接口里面的方法，在activity中实现这个接口并重写接口里面的方法
+ * 情况2.点击Activity中的按钮（在Activity布局中，与ViewPager同级），在当前显示Fragment中的执行某些操作
+ *      思路一：通过FragmentPagerAdapter.getItem()获取当前Fragment对象，调用执行Fragment中的public方法。
+ *      思路二：在Activity中定义一个接口，Fragment实现这一接口
+ */
+
+/**
+ * 在多人模式中，选择运动员，运动员的刺激持续时间和刺激间隔时间无效，只保留其他参数
+ * 统一设置刺激持续时间和刺激时间间隔参数
+ */
 
 public class MultiplayerModeTrainingMainActivity extends BaseActivity {
 
     private final String TAG="MultiplayerModeTrainingMainActivity";
 
     /*viewpager+tabLayout begin */
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private MutiplayerTrainingModePageAdapter pageAdapter;
+    private List<Fragment> fragmentList;
 
     /*viewpager+tabLayout begin */
 
@@ -93,6 +121,10 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
 
     private Map<Integer,String> multiplayerMemberBindDeviceMap=new HashMap<>();//会员member与绑定设备devicemap
 
+    private Intent gattServiceIntent;
+
+
+    //    caution：当服务绑定成功，用一个Boolean变量记录服务是否绑定成功
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -113,45 +145,100 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
             }
             Log.d(TAG, "onServiceConnected: selectedBluetoothDeviceAddressList.size()"
                     +selectedBluetoothDeviceAddressList.size());
-
 //            initBleServiceThreePrivateFunction里面初始化了actionString之后，才能makeGattUpdateIntentFilter
             registerReceiver(bleServiceGattUpdateReceiver,makeGattUpdateIntentFilter());
-
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            // TODO: 2/23/2019  解绑服务过后，不能立即进入此方法
+            /**
+             * 文档中写到即当service所在进程crash或者被kill的时候，onServiceDisconnected才会被呼叫。
+             */
+            Log.d(TAG, "onServiceDisconnected: unBindService successful");
 
             serviceBindFlag=false;
 
             mBluetoothLeService = null;
-            Log.d(TAG, "onServiceDisconnected: unBindService successful");
         }
     };
 
+    boolean allConnectedState=true;//所有设备连接成功的标志
+    boolean allDisconnectedState=true;//所有设备全部断开连接的标志，为true解绑服务
     private final BroadcastReceiver bleServiceGattUpdateReceiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             for (int i = 0; i < BluetoothLeService.ACTION_GATT_CONNECTED_ARRAY.length; i++) {
                 if(BluetoothLeService.ACTION_GATT_CONNECTED_ARRAY[i].equals(action)){
-                    // TODO: 2/21/2019 根据列表大小创建一个大小相同的state数组，记录当前设备连接状态
+                    deviceRecyclerViewControllerItem.setDeviceRecyclerViewOnClickAble(false);
+                    deviceRecyclerViewControllerItem.setDeviceRecyclerViewAlpha(0.5f);
+                    connectSelectedDevice.setText(R.string.connect_all_selected_device);
+
+//              根据列表大小创建了一个大小相同的state数组，记录当前设备连接状态，是在一键连接按钮的onclick监听器初根据时机选择设备大小始化的deviceConnectedState=new boolean[selectedBluetoothDeviceList.size()];
+
                     deviceConnectedState[i]=true;
-                    // TODO: 2/21/2019 界面上添加显示控件，显示设备已连接
-                    setDeviceConnectionState(i,R.string.connected);
+                    
+                    for (int j = 0; j < deviceConnectedState.length; j++) {
+//                        todo 当所有设备的状态都为已连接，全部设备的一键连接按钮才会变为断开连接按钮
+//                        todo 否则   方案①关闭所有存在的连接，重新连接（未选择）
+//                        todo      方案②根据UI上显示的设备连接状态，单独连接其他连接失败的设备（已选择）
+//                        todo 只要没有全部连接上，就所有人无法同时开始训练
+                        allConnectedState=allConnectedState&&deviceConnectedState[i];
+                    }
+                    if(allConnectedState){
+                        connectSelectedDevice.setText(R.string.disconnect_all_selected_device);//当所有设备的状态都为已连接，全部设备的一键连接按钮才会变为断开连接按钮
+                    }
+                    setDeviceConnectionState(i,R.string.connected);// TODO: 2/21/2019 界面上添加显示控件，显示设备已连接
                 }else if (BluetoothLeService.ACTION_GATT_DISCONNECTED_ARRAY[i].equals(action)){
+                    deviceRecyclerViewControllerItem.setDeviceRecyclerViewOnClickAble(true);
+                    deviceRecyclerViewControllerItem.setDeviceRecyclerViewAlpha(1f);
                     deviceConnectedState[i]=false;
-                    // TODO: 2/21/2019 界面上添加显示控件，显示设备已断开连接
-                    setDeviceConnectionState(i,R.string.disconnected);
+
+                    for (int j = 0; j < deviceConnectedState.length; j++) {
+                        // TODO: 2/23/2019  所有设备都断开连接,全部设备的断开连接按钮才会变为一键连接按钮
+                        // TODO: 2/23/2019 所有设备都断开连接,就解绑服务（解绑成功会自动设置serviceBindFlag=false），
+                        // TODO: 2/23/2019 只有部分设备断开连接，可以通过单个重连按钮连接
+                        allDisconnectedState=allDisconnectedState && !deviceConnectedState[i];
+                    }
+                    if (allDisconnectedState) {
+                        connectSelectedDevice.setText(R.string.connect_all_selected_device);//当所有设备的状态都为已断开，全部设备的断开连接按钮变为一键连接按钮
+
+                        if(serviceBindFlag) unbindService(mServiceConnection);
+
+                    }
+                    setDeviceConnectionState(i,R.string.disconnected);// TODO: 2/21/2019 界面上添加显示控件，显示设备已断开连接
                 }else if (BluetoothLeService.ACTION_GATT_DISCONNECTED_ARRAY[i].equals(action)){
-                    // TODO: 2/21/2019 得到设备所有的服务和characteristic
-                    allDeviceCharacteristic.add(getDeviceGattServicesCharacteristic(i));
+                    allDeviceCharacteristic.add(getDeviceGattServicesCharacteristic(i));//得到设备所有的服务和characteristic
                 }else if (BluetoothLeService.ACTION_DATA_AVAILABLE_ARRAY[i].equals(action)){
                     // TODO: 2/21/2019 根据情况，决定是否显示 EXTRA_DATA_ARRAY[i][j]
                 }
             }
         }
     };
+
+    /**
+     *构造viewpager的fragmentList
+     */
+    private List<Fragment> getFragmentList(){
+        List<Fragment> fragmentList=new ArrayList<>();
+        MultiplayerCustomTrainingFragment multiplayerCustomTrainingFragment=new MultiplayerCustomTrainingFragment();
+        Bundle multiplayerCustomTrainingFragmentBundle=new Bundle();
+        multiplayerCustomTrainingFragmentBundle.putInt(TRAINING_MODE_CODE,1);
+//        customTrainingFragmentBundle.putInt("MEMBER_ID",memberID);
+        multiplayerCustomTrainingFragment.setArguments(multiplayerCustomTrainingFragmentBundle);
+
+        VideoTrainingFragment videoTrainingFragment=new VideoTrainingFragment();
+        Bundle videoTrainingFragmentBundle=new Bundle();
+        videoTrainingFragmentBundle.putInt(TRAINING_MODE_CODE,2);
+        videoTrainingFragment.setArguments(videoTrainingFragmentBundle);
+
+        fragmentList.add(multiplayerCustomTrainingFragment);
+        fragmentList.add(videoTrainingFragment);
+
+        return fragmentList;
+    }
+
 
 
     /**
@@ -182,7 +269,19 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.multiplayer_mode);
         setContentView(R.layout.activity_multiplayer_mode_training_main);
+
+        /*tablayout+viewpager begin*/
+        this.fragmentList=getFragmentList();
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        pageAdapter=new MutiplayerTrainingModePageAdapter(fragmentManager,fragmentList);
+        viewPager=findViewById(R.id.multiplayer_training_mode_viewpager);
+        tabLayout=findViewById(R.id.multiplayer_training_mode_tab);
+        viewPager.setAdapter(pageAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        /*tablayout+viewpager end*/
+
 
         allDeviceCharacteristic=new ArrayList<ArrayList<ArrayList<BluetoothGattCharacteristic>>>();
 
@@ -195,8 +294,7 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
         connectSelectedDevice=findViewById(R.id.connect_selected_device);
         displayDeviceToogle=findViewById(R.id.display_device_toggle);
 
-        final Intent gattServiceIntent = new Intent(this, com.vimems.mainactivity.BluetoothLeService.class);
-
+        gattServiceIntent = new Intent(this, com.vimems.mainactivity.BluetoothLeService.class);
 
         connectSelectedDevice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +307,8 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
                     return;
                 }
                 if(connectSelectedDevice.getText().toString().equals(getResources().getString(R.string.connect_all_selected_device))){
-                    // TODO: 2/21/2019 初始化设备连接状态数组
+                    // 一键连接所有设备成功过后（根据广播收到的内容判断是否所有设备连接成功），devicerecyclerview设置为不可点击
+                    //初始化设备连接状态数组
                     deviceConnectedState=new boolean[selectedBluetoothDeviceList.size()];
                     for (int i = 0; i < selectedBluetoothDeviceList.size(); i++) {
                         deviceConnectedState[i]=false;
@@ -219,18 +318,20 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
                                     +selectedBluetoothDeviceList.get(i).getAddress());
                         }
                     }
-                    // TODO: 2/19/2019  绑定服务
+                    //绑定服务
                     bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
                     connectSelectedDevice.setText(R.string.disconnect_all_selected_device);
                     displayDeviceToogle.setChecked(true);
+//                    connectSelectedDevice.setText(R.string.disconnect_all_selected_device);在收到的广播BroadcastReceiver里面设置，理论上所有设备都会成功连接
+
                 }else if(connectSelectedDevice.getText().toString().equals(getResources().getString(R.string.disconnect_all_selected_device))){
                     for (int i = 0; i < selectedBluetoothDeviceAddressList.size(); i++) {
                         mBluetoothLeService.disconnect(i);
                     }
 //                    当没有点击断开连接时，也可能由于蓝牙自己的问题断开了连接，然后serviceBindFlag=false;
 //                    这种情况下，则是在点击返回键的时候，通过判断serviceBindFlag=false就会解绑服务；
-                    unbindService(mServiceConnection);
-                    connectSelectedDevice.setText(R.string.connect_all_selected_device);
+//                    customUnbindService();断开连接，需要解绑服务,再在收到的广播BroadcastReceiver里面设置
+//                    connectSelectedDevice.setText(R.string.connect_all_selected_device);在收到的广播BroadcastReceiver里面设置，当所有设备都断开连接时，才设置为可连接
                 }
             }
         });
@@ -248,6 +349,17 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
         scanLeDevice(true);
     }
 
+    /**
+     * Activity声明接口，使用接口，在DeviceAdapter实现接口。
+     */
+    public interface DeviceRecyclerViewController{
+        void setDeviceRecyclerViewOnClickAble(boolean onClickAble);
+        void setDeviceRecyclerViewAlpha(float alpha);
+    }
+    public void setDeviceRecyclerViewControllerItem(DeviceRecyclerViewController deviceRecyclerViewControllerItem){
+        this.deviceRecyclerViewControllerItem=deviceRecyclerViewControllerItem;
+    }
+    private DeviceRecyclerViewController deviceRecyclerViewControllerItem;
     /**
      * 断开第i个设备
      * 间接控制BluetoothBleService的bluetoothGattList.get(indexOfDevice).disconnect();
@@ -285,7 +397,7 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
         scanLeDevice(false);
         Log.d(TAG, "onPause: "+"scanLeDevice(false);");
 
-        // TODO: 2/22/2019 pause 状态是否清空列表，应该为否
+        // TODO: 2/22/2019 pause 考虑是否清空列表
 //        selectedBluetoothDeviceList.clear();
 //        selectedBluetoothDeviceAddressList.clear();
 //        Log.d(TAG, "onPause: "+"selectedBluetoothDeviceList.clear();\n" +
@@ -321,9 +433,12 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
 //            }
 //        }
 //        判断是否绑定过BluetoothLeService，
-        if(serviceBindFlag){
-            unbindService(mServiceConnection);
-        }
+//        if(serviceBindFlag){
+//          try{ unbindService(mServiceConnection);}catch(Exception e){}
+//        }
+
+        customUnbindService();
+
         mBluetoothLeService = null;
     }
 
@@ -383,6 +498,10 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_scan:
+                if(connectSelectedDevice.getText().toString().equals(getResources().getString(R.string.disconnect_all_selected_device))){
+                    Toast.makeText(this,"请先断开连接",Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 bluetoothDeviceArrayList.clear();
                 // TODO: 2/14/2019  deviceDefaultCustomNameMap是否需要清空
                 scanLeDevice(true);
@@ -526,9 +645,43 @@ public class MultiplayerModeTrainingMainActivity extends BaseActivity {
                 intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE_ARRAY[i][j]);
                 intentFilter.addAction(BluetoothLeService.ACTION_DATA_WRITE_SUCCESS_ARRAY[i][j]);
             }
-
         }
-
         return intentFilter;
     }
+    private void customUnbindService(){
+//        判断是否绑定过BluetoothLeService，
+//        绑定暂时是放在onclick里面，如果未点击onclick就返回上一个界面，就不需要解绑
+//        onclick绑定过BluetoothLeService，就解绑服务
+        ActivityManager myManager = (ActivityManager) this
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(300);
+        Log.d(TAG, "onDestroy: runningService.size()="+runningService.size());
+        for (int i = 0; i < runningService.size(); i++) {
+            if (runningService.get(i).service.getClassName()
+                    .equals("com.vimems.mainactivity.BluetoothLeService")) {
+                unbindService(mServiceConnection);
+            }
+        }
+    }
+    private void custombindService(){
+//        判断是否绑定过BluetoothLeService，
+//        绑定暂时是放在onclick里面，如果未点击onclick就返回上一个界面，就不需要解绑
+//        onclick绑定过BluetoothLeService，就解绑服务
+        ActivityManager myManager = (ActivityManager) this
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(300);
+        Log.d(TAG, "onDestroy: runningService.size()="+runningService.size());
+        for (int i = 0; i < runningService.size(); i++) {
+            if (runningService.get(i).service.getClassName()
+                    .equals("com.vimems.mainactivity.BluetoothLeService")) {
+                Log.d(TAG, "custombindService: 已绑定服务");
+                return;
+            }
+        }
+        bindService(gattServiceIntent,mServiceConnection,BIND_AUTO_CREATE);
+
+    }
+
 }

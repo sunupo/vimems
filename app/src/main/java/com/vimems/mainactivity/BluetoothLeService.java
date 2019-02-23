@@ -265,7 +265,7 @@ public class BluetoothLeService extends Service {
             Log.d(TAG, "onUnbind: bluetoothDeviceAddressList.size()="+bluetoothDeviceAddressList.size());
             close(i);
         }
-        Log.d(TAG, "onUnbind: super.onUnbind(intent);");
+        Log.d(TAG, "onUnbind:");
         return super.onUnbind(intent);
     }
 

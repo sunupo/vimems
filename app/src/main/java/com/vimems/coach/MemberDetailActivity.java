@@ -49,7 +49,7 @@ public class MemberDetailActivity extends BaseActivity {
 
     public static int memberID;
     
-    List<Fragment> fragmentList;
+    private List<Fragment> fragmentList;
 
 
     private Handler mHandler;
@@ -93,8 +93,8 @@ public class MemberDetailActivity extends BaseActivity {
         mHandler=new Handler();
 
         memberID=getIntent().getIntExtra("MEMBER_ID",1);
-        initFragmentList();
 
+        this.fragmentList=getFragmentList();
         FragmentManager fragmentManager=getSupportFragmentManager();
         pageAdapter=new CustomTrainingFragmentPageAdapter(fragmentManager,fragmentList);
         viewPager=findViewById(R.id.training_mode_viewpager);
@@ -128,11 +128,11 @@ public class MemberDetailActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void initFragmentList(){
+    public List<Fragment> getFragmentList(){
         /**
          * viewpager的fragment列表
          */
-        fragmentList=new ArrayList<>();
+        List<Fragment> fragmentList=new ArrayList<>();
         //因为在viewpager的第一页和第三页使用的是CustomTrainingFragment，所以传入参数1和3来记录位置
         //在CustomTrainingItemFragment中可以通过参数是1，设置低频和高频不显示
         //通过判断参数为3，设置vip训练的高频和低频可以显示
@@ -152,6 +152,8 @@ public class MemberDetailActivity extends BaseActivity {
         fragmentList.add(customTrainingFragment);
         fragmentList.add(new VideoTrainingFragment());
         fragmentList.add(customTrainingFragmentVip);
+
+        return fragmentList;
     }
     private void scanLeDevice(final boolean enable) {
         if (enable) {

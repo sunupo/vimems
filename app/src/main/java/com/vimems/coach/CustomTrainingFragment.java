@@ -79,9 +79,11 @@ public class CustomTrainingFragment extends Fragment {
 
         FragmentManager fragmentManager=getChildFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        Bundle bundle1,bundle2,bundle3,bundle4;
         CustomTrainingItemFragment customTrainingItemFragment1,customTrainingItemFragment2,customTrainingItemFragment3,customTrainingItemFragment4;
+        Bundle bundle1,bundle2,bundle3,bundle4;
+
         switch (checkedId){
+
             case R.id.custom_training_options_gain_muscle:
                 customTrainingItemFragment1=new CustomTrainingItemFragment();
                 bundle1=new Bundle();

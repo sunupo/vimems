@@ -150,6 +150,10 @@
     <string name="display_device_recyclerview">查看可用设备列表</string>
     <string name="hide_device_recyclerview">隐藏设备列表</string>
     <string name="multiplayer_mode">多人模式</string>
+    <string name="custom_training_module_item_gain_muscle">增肌</string>
+    <string name="custom_training_module_item_lose_fat">减脂</string>
+    <string name="custom_training_module_item_shape">塑形</string>
+    <string name="custom_training_module_item_recovery">恢复</string>
 
 
 </resources>
